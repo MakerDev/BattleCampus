@@ -138,6 +138,12 @@ namespace Assets.Scripts
                 _disableGameObjectsOnDeath[i].SetActive(true);
             }
 
+            CharacterController controller = GetComponent<CharacterController>();
+            if (controller !=null)
+            {
+                controller.enabled = true;
+            }
+
             Collider collider = GetComponent<Collider>();
             if (collider != null)
             {
@@ -202,6 +208,12 @@ namespace Assets.Scripts
             if (collider != null)
             {
                 collider.enabled = false;
+            }
+
+            CharacterController controller = GetComponent<CharacterController>();
+            if (controller != null)
+            {
+                controller.enabled = false;
             }
 
             GameObject effectObject = Instantiate(_deatchEffect, transform.position, Quaternion.identity);
