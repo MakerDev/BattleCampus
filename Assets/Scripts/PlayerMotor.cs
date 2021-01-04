@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
 //[RequireComponent(typeof(CharacterController))]
-public class PlayerMotor : MonoBehaviour
+public class PlayerMotor : NetworkBehaviour
 {
     [SerializeField]
     private Camera _camera;
@@ -64,6 +65,10 @@ public class PlayerMotor : MonoBehaviour
 
     private void PerformMovement()
     {
+        if (!isLocalPlayer && !gameObject.activeSelf)
+        {
+            return;
+        }
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");

@@ -106,11 +106,11 @@ GameObject:
   - component: {fileID: 2774195178687364976}
   - component: {fileID: -3757069456253890867}
   - component: {fileID: -7619684354661644314}
+  - component: {fileID: 4034946118366539772}
   - component: {fileID: -8314409359875920971}
   - component: {fileID: 6677444696193786211}
   - component: {fileID: -963771976714320795}
   - component: {fileID: 3698028248341751151}
-  - component: {fileID: 4034946118366539772}
   - component: {fileID: -835318169010552750}
   m_Layer: 8
   m_Name: Player
@@ -133,6 +133,7 @@ Transform:
   - {fileID: 2774195178853581757}
   - {fileID: 2774195178566975313}
   - {fileID: 6438920394344542283}
+  - {fileID: 4095836664914271491}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -150,7 +151,7 @@ CharacterController:
   m_Height: 1.2
   m_Radius: 0.5
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0.1
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
@@ -182,6 +183,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94a12ce513e631f4ca5aee43bf939a7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   _camera: {fileID: 2774195178853581731}
   _cameraRotationLimit: 85
   _groundCheck: {fileID: 6438920394344542283}
@@ -205,7 +208,7 @@ MonoBehaviour:
   _lookSensitivity: 10
   _thrusterForce: 1000
   _thrusterFuelBurnSpeed: 1
-  _thrusterFuelRegenSpeed: 0.3
+  _thrusterFuelRegenSpeed: 0.8
 --- !u!114 &-3757069456253890867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,6 +246,25 @@ MonoBehaviour:
   localRotationSensitivity: 0.01
   localScaleSensitivity: 0.01
   target: {fileID: 2774195178853581757}
+--- !u!114 &4034946118366539772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2774195178687364979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  target: {fileID: 7684147416652712660}
 --- !u!114 &-8314409359875920971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,6 +287,7 @@ MonoBehaviour:
   - {fileID: 2774195178853581730}
   - {fileID: 3698028248341751151}
   - {fileID: 3987529692505794381}
+  - {fileID: 2540137283541538514}
   _remoteLayerName: RemotePlayer
   _playerUIPrefab: {fileID: 8445655239935999386, guid: d171ebe82d24ff3458e99efeb18722dc,
     type: 3}
@@ -331,25 +354,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4034946118366539772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2774195178687364979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  clientAuthority: 1
-  localPositionSensitivity: 0.01
-  localRotationSensitivity: 0.01
-  localScaleSensitivity: 0.01
-  target: {fileID: 7684147416652712660}
 --- !u!114 &-835318169010552750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,7 +370,7 @@ MonoBehaviour:
   syncInterval: 0.1
   _primaryWeapon:
     Name: Blaster
-    Damage: 40
+    Damage: 20
     Range: 100
     FireRate: 0
     Graphics: {fileID: 642052492420747281, guid: c4764c6b7e596e14d80ad221d31fc8b6,
@@ -546,6 +550,36 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &7927083064434750276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4095836664914271491}
+  m_Layer: 8
+  m_Name: PlayerInfoHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4095836664914271491
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7927083064434750276}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.59, z: 0.014}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2774195178687364980}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5549876629569438396
 PrefabInstance:
   m_ObjectHideFlags: 0

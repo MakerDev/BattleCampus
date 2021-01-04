@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 6198846753230582391}
   - component: {fileID: 6198846753230582390}
   - component: {fileID: 5504795481475633529}
-  - component: {fileID: 6198846753230582385}
   - component: {fileID: 6198846753230582384}
   - component: {fileID: 2709915816288704298}
+  - component: {fileID: 2050733299}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -52,11 +52,11 @@ MonoBehaviour:
   autoStartServerBuild: 1
   showDebugMessages: 0
   serverTickRate: 30
-  offlineScene: Assets/Scenes/Lobby.unity
+  offlineScene: 
   onlineScene: Assets/Scenes/GameScene1.unity
   transport: {fileID: 5504795481475633529}
   networkAddress: localhost
-  maxConnections: 4
+  maxConnections: 60
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
@@ -78,29 +78,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transports:
-  - {fileID: 6198846753230582385}
+  - {fileID: 2050733299}
   - {fileID: 2709915816288704298}
---- !u!114 &6198846753230582385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6198846753230582387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Port: 7777
-  NoDelay: 1
-  Interval: 10
-  FastResend: 2
-  CongestionWindow: 0
-  SendWindowSize: 128
-  ReceiveWindowSize: 128
-  debugLog: 0
-  debugGUI: 0
 --- !u!114 &6198846753230582384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,5 +120,23 @@ MonoBehaviour:
   clientUseWss: 0
   sslEnabled: 0
   sslCertJson: ./cert.json
-  sslProtocols: 3072
-  _logLevels: 0
+  sslProtocols: 240
+  _logLevels: 4
+--- !u!114 &2050733299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198846753230582387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  port: 7777
+  NoDelay: 1
+  serverMaxMessageSize: 16384
+  serverMaxReceivesPerTick: 10000
+  clientMaxMessageSize: 16384
+  clientMaxReceivesPerTick: 1000

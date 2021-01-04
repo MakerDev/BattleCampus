@@ -24,18 +24,13 @@ namespace Assets.Scripts
         [SerializeField]
         private GameObject _playerGraphics;
 
-        public override void OnStartClient()
+        private void Start()
         {
-            base.OnStartClient();
-
             string netId = GetComponent<NetworkIdentity>().netId.ToString();
             Player player = GetComponent<Player>();
 
             GameManager.RegisterPlayer(netId, player);
-        }
 
-        private void Start()
-        {
             if (!isLocalPlayer)
             {
                 foreach (var component in _componentsToDiable)
@@ -47,6 +42,7 @@ namespace Assets.Scripts
             }
             else
             {
+                //If Local player
                 PlayerUIInstance = Instantiate(_playerUIPrefab);
                 PlayerUIInstance.name = _playerUIPrefab.name;
 
@@ -60,10 +56,14 @@ namespace Assets.Scripts
                 }
 
                 playerUI.SetController(GetComponent<PlayerController>());
+                playerUI.SetPlayer(GetComponent<Player>());
                 GetComponent<Player>().PlayerSetUp();
+
+                Debug.Log("PlayerSetUp: Called player setup on server? " + isServer);
             }
 
             Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
         private void OnDisable()
@@ -72,11 +72,10 @@ namespace Assets.Scripts
 
             if (isLocalPlayer)
             {
-                GameManager.Instance.SetSceneCameraActive(true);
+                GameManager.Instance.SetSceneCameraActive(true);                
             }
 
             GameManager.UnRegisterPlayer(transform.name);
         }
     }
-
 }

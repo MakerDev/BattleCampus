@@ -62,6 +62,7 @@ namespace Assets.Scripts
             {
                 _menuCanvas.SetActive(true);
                 Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
         }
 
@@ -71,6 +72,7 @@ namespace Assets.Scripts
             {
                 _menuCanvas.SetActive(false);
                 Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
         }
 
@@ -87,11 +89,18 @@ namespace Assets.Scripts
             string playerId = PLAYER_ID_PREFIX + netId;
             _players.Add(playerId, player);
             player.transform.name = playerId;
+
+            Debug.Log($"Client : {playerId} is registered");
         }
 
         public static Player GetPlayer(string playerId)
         {
-            return _players[playerId];
+            if (_players.ContainsKey(playerId))
+            {
+                return _players[playerId];
+            }
+
+            throw new System.Exception($"No player with ID {playerId} is found");
         }
 
         public static void UnRegisterPlayer(string playerId)

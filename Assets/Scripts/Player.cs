@@ -36,6 +36,11 @@ namespace Assets.Scripts
 
         private bool _isFirstSetup = true;
 
+        private void Start()
+        {
+            _currentHealth = _maxHealth;
+        }
+
         public void PlayerSetUp()
         {
             if (isLocalPlayer)
@@ -43,11 +48,12 @@ namespace Assets.Scripts
                 GameManager.Instance.SetSceneCameraActive(false);
                 GetComponent<PlayerSetup>().PlayerUIInstance.SetActive(true);
             }
-
+            string netId = GetComponent<NetworkIdentity>().netId.ToString();
+            Debug.Log($"Player Setup is called on Player{netId}");
             CmdBroadCastNewPlayerSetUp();
         }
 
-        [Command]
+        [Command(ignoreAuthority = true)]
         private void CmdBroadCastNewPlayerSetUp()
         {
             RpcSetupPlayeronAllClients();
@@ -74,6 +80,10 @@ namespace Assets.Scripts
 
         public void SetDefaults()
         {
+            string caller = isServer ? "Server" : "Client";
+            string netId = GetComponent<NetworkIdentity>().netId.ToString();
+            Debug.Log($"{caller} called SetDefaults for Player{netId}");
+
             IsDead = false;
 
             _currentHealth = _maxHealth;
@@ -111,6 +121,11 @@ namespace Assets.Scripts
             {
                 Die();
             }
+        }
+
+        public float GetCurrentHpRatio()
+        {
+            return _currentHealth / _maxHealth;
         }
 
         private IEnumerator Respawn()

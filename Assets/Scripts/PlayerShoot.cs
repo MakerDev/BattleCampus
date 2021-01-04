@@ -49,7 +49,7 @@ namespace Assets.Scripts
             {
                 if (Input.GetButtonDown("Fire1"))
                 {
-                    InvokeRepeating("Shoot", 0f, 1f / _currentWeapon.FireRate);
+                    InvokeRepeating(nameof(Shoot), 0f, 1f / _currentWeapon.FireRate);
                 }
                 else if (Input.GetButtonUp("Fire1"))
                 {
@@ -100,24 +100,25 @@ namespace Assets.Scripts
 
             if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out raycastHit, _currentWeapon.Range, _layerMask))
             {
+                //We hit something
+                Debug.Log($"Hit : {raycastHit.collider.name}");
+
                 if (raycastHit.collider.CompareTag(PLAYER_TAG))
                 {
                     CmdPlayershot(raycastHit.collider.name, _currentWeapon.Damage);
                 }
 
-                CmdOnHit(raycastHit.point, raycastHit.normal);
-
-                //We hit something
-                Debug.Log($"Hit : {raycastHit.collider.name}");
+                CmdOnHit(raycastHit.point, raycastHit.normal);                
             }
         }
 
         [Command]
         void CmdPlayershot(string playerId, float damage)
         {
-            Debug.Log(playerId + " has been shot");
+            Debug.Log(playerId + " has been shot by damage " + damage);
 
             Player player = GameManager.GetPlayer(playerId);
+
             player.RpcTakeDamage(damage);
         }
     }
