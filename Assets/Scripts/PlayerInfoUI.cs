@@ -29,8 +29,6 @@ namespace Assets.Scripts
                 return;
             }
 
-            Debug.Log($"{_player.PlayerName}'s current health : {_player.GetCurrentHpRatio()}");
-
             _hpBar.SetScale(new Vector3(_player.GetCurrentHpRatio(), 1, 1));
         }
     }

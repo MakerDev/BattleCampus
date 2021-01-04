@@ -406,10 +406,10 @@ MonoBehaviour:
   _disableOnDeath:
   - {fileID: 6677444696193786211}
   - {fileID: 2774195178687364976}
-  - {fileID: 1051459320285209284}
   _disableGameObjectsOnDeath:
   - {fileID: 2774195178566975312}
   - {fileID: 2774195178853581756}
+  - {fileID: 7927083064434750276}
   _deatchEffect: {fileID: 8355751096981040032, guid: a11a7d923f0d79445aa1b36aa3f10d4c,
     type: 3}
   _spawnEffect: {fileID: 7782183243299101248, guid: 19b720091595d114a86bd698045c5508,

@@ -24,6 +24,14 @@ namespace Assets.Scripts
         [SerializeField]
         private GameObject _playerGraphics;
 
+        private static PlayerUI _playerUI;
+        public static PlayerUI PlayerUI
+        {
+            get { return _playerUI; }
+            private set { _playerUI = value; }
+        }
+
+
         private void Start()
         {
             string netId = GetComponent<NetworkIdentity>().netId.ToString();
@@ -62,18 +70,18 @@ namespace Assets.Scripts
         private void ConfigurePlayerUI()
         {                
             //Configure PlayerUI
-            PlayerUI playerUI = PlayerUIInstance.GetComponent<PlayerUI>();
-            if (playerUI == null)
+            _playerUI = PlayerUIInstance.GetComponent<PlayerUI>();
+            if (_playerUI == null)
             {
                 Debug.LogError("No PlayerUI Component");
             }
 
-            playerUI.SetController(GetComponent<PlayerController>());
+            _playerUI.SetController(GetComponent<PlayerController>());
 
             Player player = GetComponent<Player>();
 
-            playerUI.SetPlayer(player);
-            playerUI.SetLocalPlayerName($"Player{netId}");
+            _playerUI.SetPlayer(player);
+            _playerUI.SetLocalPlayerName($"Player{netId}");
         }
 
         private void OnDisable()

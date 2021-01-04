@@ -42,6 +42,7 @@ namespace Assets.Scripts
 
         [SyncVar(hook = nameof(OnNameSet))]
         private string _playerName = $"player";
+
         public string PlayerName { get { return _playerName; } }
 
         private bool _isFirstSetup = true;
@@ -61,13 +62,25 @@ namespace Assets.Scripts
       
         public void OnNameSet(string old, string newName)
         {
+            if (isLocalPlayer)
+            {
+                //HACK
+                PlayerSetup.PlayerUI?.SetLocalPlayerName(newName);
+            }
+
             _playerInfo.SetPlayer(this);
         }
 
         public void SetName(string newName)
         {
-            _playerName = newName;
+            CmdChangePlayerName(newName);
         }
+
+        [Command]
+        public void CmdChangePlayerName(string newName)
+        {
+            _playerName = newName;
+        }        
 
         public void PlayerSetUp()
         {
@@ -109,7 +122,7 @@ namespace Assets.Scripts
         public void SetDefaults()
         {
             string caller = isServer ? "Server" : "Client";
-            Debug.Log($"{caller} called SetDefaults for {_playerName}");
+            Debug.Log($"{caller} called SetDefaults for {PlayerName}");
 
             IsDead = false;
 

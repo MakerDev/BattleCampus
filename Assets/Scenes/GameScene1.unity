@@ -402,6 +402,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6198846753230582390, guid: 49d598b7df45446438ebf76d045c404a,
+        type: 3}
+      propertyPath: networkAddress
+      value: 3.36.66.52
+      objectReference: {fileID: 0}
     - target: {fileID: 6198846753230582391, guid: 49d598b7df45446438ebf76d045c404a,
         type: 3}
       propertyPath: m_RootOrder
@@ -878,7 +883,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &859320598
 RectTransform:
   m_ObjectHideFlags: 0
