@@ -8,6 +8,8 @@ namespace Assets.Scripts
     [RequireComponent(typeof(PlayerSetup))]
     public class Player : NetworkBehaviour
     {
+        public static Player LocalPlayer { get; private set; }
+
         [SyncVar]
         private bool _isDead = false;
         public bool IsDead
@@ -34,11 +36,37 @@ namespace Assets.Scripts
         [SerializeField]
         private GameObject _spawnEffect;
 
+       
+        [SerializeField]
+        private PlayerInfoUI _playerInfo;
+
+        [SyncVar(hook = nameof(OnNameSet))]
+        private string _playerName = $"player";
+        public string PlayerName { get { return _playerName; } }
+
         private bool _isFirstSetup = true;
 
         private void Start()
         {
             _currentHealth = _maxHealth;
+
+            string netId = GetComponent<NetworkIdentity>().netId.ToString();
+            _playerName = $"Player{netId}";
+
+            if (isLocalPlayer)
+            {
+                LocalPlayer = this;
+            }
+        }
+      
+        public void OnNameSet(string old, string newName)
+        {
+            _playerInfo.SetPlayer(this);
+        }
+
+        public void SetName(string newName)
+        {
+            _playerName = newName;
         }
 
         public void PlayerSetUp()
@@ -48,7 +76,7 @@ namespace Assets.Scripts
                 GameManager.Instance.SetSceneCameraActive(false);
                 GetComponent<PlayerSetup>().PlayerUIInstance.SetActive(true);
             }
-            string netId = GetComponent<NetworkIdentity>().netId.ToString();
+
             Debug.Log($"Player Setup is called on Player{netId}");
             CmdBroadCastNewPlayerSetUp();
         }
@@ -81,8 +109,7 @@ namespace Assets.Scripts
         public void SetDefaults()
         {
             string caller = isServer ? "Server" : "Client";
-            string netId = GetComponent<NetworkIdentity>().netId.ToString();
-            Debug.Log($"{caller} called SetDefaults for Player{netId}");
+            Debug.Log($"{caller} called SetDefaults for {_playerName}");
 
             IsDead = false;
 

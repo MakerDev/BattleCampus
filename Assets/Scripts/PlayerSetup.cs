@@ -48,15 +48,8 @@ namespace Assets.Scripts
 
                 Utils.SetLayerRecursive(_playerGraphics, LayerMask.NameToLayer(DONT_DRAW_LAYER_NAME));
 
-                //Configure PlayerUI
-                PlayerUI playerUI = PlayerUIInstance.GetComponent<PlayerUI>();
-                if (playerUI == null)
-                {
-                    Debug.LogError("No PlayerUI Component");
-                }
+                ConfigurePlayerUI();
 
-                playerUI.SetController(GetComponent<PlayerController>());
-                playerUI.SetPlayer(GetComponent<Player>());
                 GetComponent<Player>().PlayerSetUp();
 
                 Debug.Log("PlayerSetUp: Called player setup on server? " + isServer);
@@ -64,6 +57,23 @@ namespace Assets.Scripts
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        private void ConfigurePlayerUI()
+        {                
+            //Configure PlayerUI
+            PlayerUI playerUI = PlayerUIInstance.GetComponent<PlayerUI>();
+            if (playerUI == null)
+            {
+                Debug.LogError("No PlayerUI Component");
+            }
+
+            playerUI.SetController(GetComponent<PlayerController>());
+
+            Player player = GetComponent<Player>();
+
+            playerUI.SetPlayer(player);
+            playerUI.SetLocalPlayerName($"Player{netId}");
         }
 
         private void OnDisable()

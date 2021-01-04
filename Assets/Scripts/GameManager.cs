@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
@@ -13,6 +14,8 @@ namespace Assets.Scripts
         private GameObject _sceneCamera;
         [SerializeField]
         private GameObject _menuCanvas;
+        [SerializeField]
+        private InputField _renameInputField;
 
         private void Awake()
         {
@@ -74,6 +77,11 @@ namespace Assets.Scripts
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
+        }
+
+        public void RenameLocalPlayer()
+        {
+            Player.LocalPlayer.SetName(_renameInputField.text);
         }
 
         #region PLAYER TRACKING

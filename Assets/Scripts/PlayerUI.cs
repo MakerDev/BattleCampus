@@ -2,6 +2,7 @@
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
@@ -13,14 +14,21 @@ namespace Assets.Scripts
         [SerializeField]
         private RectTransform _hpBar;
 
+        [SerializeField]
+        private Text _playerNameText;
+
         private PlayerController _controller;
         private Player _player;
-
 
         private void Update()
         {
             SetFuelAmout(_controller.GetThrusterFuelAmount());
             _hpBar.SetScale(new Vector3(_player.GetCurrentHpRatio(), 1, 1));
+        }
+
+        public void SetLocalPlayerName(string name)
+        {
+            _playerNameText.text = name;
         }
 
         public void SetController(PlayerController playerController)

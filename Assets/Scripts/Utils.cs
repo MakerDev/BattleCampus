@@ -12,6 +12,10 @@ namespace Assets.Scripts
                 return;
             }
 
+            //if (gameObject.layer != LayerMask.NameToLayer("DontDraw"))
+            //{
+            //    gameObject.layer = newLayer;
+            //}
             gameObject.layer = newLayer;
 
             foreach (Transform transform in gameObject.transform)
