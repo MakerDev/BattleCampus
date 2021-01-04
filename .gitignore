@@ -5,6 +5,8 @@
 
 /Build-WebGL
 /Build-windows
+/Build-windows-server
+/Build-linuxServer
 
 # User-specific files
 *.rsuser
