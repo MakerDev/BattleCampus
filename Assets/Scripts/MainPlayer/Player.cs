@@ -56,25 +56,21 @@ namespace Assets.Scripts
             {
                 LocalPlayer = this;
             }
-            _currentHealth = _maxHealth;
 
-            string netId = GetComponent<NetworkIdentity>().netId.ToString();
+            _currentHealth = _maxHealth;
 
             //If this is local player, set player name manually because this script being called 'Start' 
             //means that this is joining the existing room and other players' name will be automatically synced.
             if (isLocalPlayer)
             {
-                _playerName = $"Player{netId}";
+                string netId = GetComponent<NetworkIdentity>().netId.ToString();
+                var newName = $"Player{netId}";
+                SetName(newName);
+                GameManager.Instance.CmdPrintMessage($"{newName} joined!", null, ChatType.Info);
             }
 
             //TODO: Fetch all player info from server..?
             _playerInfo.SetPlayer(this);
-        }
-        public override void OnStartClient()
-        {
-            base.OnStartClient();
-
-            GameManager.Instance.PrintMessage($"{PlayerName} joined", null, ChatType.Info);
         }
 
         public override void OnStopClient()

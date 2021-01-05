@@ -68,7 +68,7 @@ namespace Assets.Scripts
             {
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    CmdPrintMessage(_chatInputField.text, Player.LocalPlayer.PlayerName);
+                    CmdPrintMessage(_chatInputField.text, Player.LocalPlayer.PlayerName, ChatType.Player);
                     _chatInputField.text = "";
                 }
             }
@@ -99,15 +99,15 @@ namespace Assets.Scripts
         }
 
         [Command(ignoreAuthority = true)]
-        public void CmdPrintMessage(string message, string sender)
+        public void CmdPrintMessage(string message, string sender, ChatType chatType)
         {
-            RpcPrintMessage(message, sender);
+            RpcPrintMessage(message, sender, chatType);
         }
 
         [ClientRpc]
-        public void RpcPrintMessage(string message, string sender)
+        public void RpcPrintMessage(string message, string sender, ChatType chatType)
         {
-            PrintMessage(message, sender);
+            PrintMessage(message, sender, chatType);
         }
 
         public void PrintMessage(string message, string sender, ChatType chatType = ChatType.None)
@@ -213,6 +213,13 @@ namespace Assets.Scripts
             Debug.Log($"Client : {playerId} is registered");
         }
 
+        public static void UnRegisterPlayer(string playerId)
+        {
+            _players.Remove(playerId);
+
+            Debug.Log($"Client : {playerId} is removed");
+        }
+
         public static Player GetPlayer(string playerId)
         {
             if (_players.ContainsKey(playerId))
@@ -222,12 +229,6 @@ namespace Assets.Scripts
 
             throw new System.Exception($"No player with ID {playerId} is found");
         }
-
-        public static void UnRegisterPlayer(string playerId)
-        {
-            _players.Remove(playerId);
-        }
-
         //private void OnGUI()
         //{
         //    GUILayout.BeginArea(new Rect(200, 200, 200, 200));

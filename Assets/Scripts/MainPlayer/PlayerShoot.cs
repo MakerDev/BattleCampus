@@ -45,7 +45,6 @@ namespace Assets.Scripts
                                         out RaycastHit hit,
                                         _currentWeapon.Range,
                                         _remotePlayerLayer);
-            Debug.Log("Hit? : " + isHit);
             PlayerSetup.PlayerUI.SetCrossHair(isHit);            
 
             if (_currentWeapon.FireRate <= 0f)
