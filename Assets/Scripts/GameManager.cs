@@ -124,7 +124,7 @@ namespace Assets.Scripts
             switch (chatType)
             {
                 case ChatType.Info:
-                    return Color.green;
+                    return Color.red;
 
                 case ChatType.Player:
                     return Color.black;

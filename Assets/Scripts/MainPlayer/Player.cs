@@ -38,7 +38,7 @@ namespace Assets.Scripts
         private GameObject _deatchEffect;
         [SerializeField]
         private GameObject _spawnEffect;
-       
+
         [SerializeField]
         private PlayerInfoUI _playerInfo;
 
@@ -52,14 +52,19 @@ namespace Assets.Scripts
 
         private void Start()
         {
-            _currentHealth = _maxHealth;
-
-            string netId = GetComponent<NetworkIdentity>().netId.ToString();
-            _playerName = $"Player{netId}";
-
             if (isLocalPlayer)
             {
                 LocalPlayer = this;
+            }
+            _currentHealth = _maxHealth;
+
+            string netId = GetComponent<NetworkIdentity>().netId.ToString();
+
+            //If this is local player, set player name manually because this script being called 'Start' 
+            //means that this is joining the existing room and other players' name will be automatically synced.
+            if (isLocalPlayer)
+            {
+                _playerName = $"Player{netId}";
             }
 
             _playerInfo.SetPlayer(this);
@@ -68,6 +73,8 @@ namespace Assets.Scripts
         public override void OnStopClient()
         {
             base.OnStopClient();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             //TODO : Clear match info
         }
 
@@ -97,7 +104,7 @@ namespace Assets.Scripts
         public void CmdChangePlayerName(string newName)
         {
             _playerName = newName;
-        }        
+        }
 
         public void PlayerSetUp()
         {
@@ -156,7 +163,7 @@ namespace Assets.Scripts
             }
 
             CharacterController controller = GetComponent<CharacterController>();
-            if (controller !=null)
+            if (controller != null)
             {
                 controller.enabled = true;
             }

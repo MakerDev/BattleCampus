@@ -13,17 +13,49 @@ namespace Assets.Scripts
 
         [SerializeField]
         private RectTransform _hpBar;
-
         [SerializeField]
         private Text _playerNameText;
 
+        [SerializeField]
+        private Image _crossHairImage;
+        [SerializeField]
+        private Sprite _crossHairDefault;
+        [SerializeField]
+        private Sprite _crossHairOnTarget;
+
         private PlayerController _controller;
         private Player _player;
+
+        private void Start()
+        {
+            _crossHairImage.sprite = _crossHairDefault;
+        }
 
         private void Update()
         {
             SetFuelAmout(_controller.GetThrusterFuelAmount());
             _hpBar.SetScale(new Vector3(_player.GetCurrentHpRatio(), 1, 1));
+        }
+
+        private bool _wasOnTarget = false;
+
+        public void SetCrossHair(bool onTarget)
+        {
+            //if (_wasOnTarget == onTarget)
+            //{
+            //    return;
+            //}
+
+            _wasOnTarget = onTarget;
+
+            if (onTarget)
+            {
+                _crossHairImage.sprite = _crossHairOnTarget;
+            }
+            else
+            {
+                _crossHairImage.sprite = _crossHairDefault;
+            }
         }
 
         public void SetLocalPlayerName(string name)

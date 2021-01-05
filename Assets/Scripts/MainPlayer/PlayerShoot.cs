@@ -15,6 +15,8 @@ namespace Assets.Scripts
         private Camera _camera;
         [SerializeField]
         private LayerMask _layerMask;
+        [SerializeField]
+        private LayerMask _remotePlayerLayer;
 
         private WeaponManager _weaponManager;
         private PlayerWeapon _currentWeapon;
@@ -31,12 +33,20 @@ namespace Assets.Scripts
 
         private void Update()
         {
-            _currentWeapon = _weaponManager.GetCurrentWeapon();
-
             if (!isLocalPlayer || GameManager.Instance.IsMenuOpen)
             {
                 return;
             }
+
+            _currentWeapon = _weaponManager.GetCurrentWeapon();
+
+            var isHit = Physics.Raycast(_camera.transform.position,
+                                        _camera.transform.forward,
+                                        out RaycastHit hit,
+                                        _currentWeapon.Range,
+                                        _remotePlayerLayer);
+            Debug.Log("Hit? : " + isHit);
+            PlayerSetup.PlayerUI.SetCrossHair(isHit);            
 
             if (_currentWeapon.FireRate <= 0f)
             {
@@ -55,7 +65,7 @@ namespace Assets.Scripts
                 {
                     CancelInvoke("Shoot");
                 }
-            }
+            }            
         }
 
         [Command]
