@@ -8,31 +8,33 @@ namespace Assets.Scripts
     [RequireComponent(typeof(Animator))]
     public class PlayerController : MonoBehaviour
     {
+        #region STATS
+        [Header("Stats")]
         [SerializeField]
         private float _speed = 5.0f;
         [SerializeField]
         private float _lookSensitivity = 6.0f;
         [SerializeField]
         private float _thrusterForce = 0.01f;
-
         [SerializeField]
         private float _thrusterFuelBurnSpeed = 1f;
         [SerializeField]
         private float _thrusterFuelRegenSpeed = 0.3f;
         private float _thrusterFuelAmount = 1f;
-        
+        #endregion
+
         private PlayerMotor _motor;
         private Animator _animator;
-
-        public float GetThrusterFuelAmount()
-        {
-            return _thrusterFuelAmount;
-        }
 
         private void Start()
         {
             _motor = GetComponent<PlayerMotor>();
             _animator = GetComponent<Animator>();
+        }
+
+        public float GetThrusterFuelAmount()
+        {
+            return _thrusterFuelAmount;
         }
 
         private void Update()

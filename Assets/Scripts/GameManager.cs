@@ -17,6 +17,10 @@ namespace Assets.Scripts
         [SerializeField]
         private InputField _renameInputField;
 
+        private static Dictionary<string, Player> _players = new Dictionary<string, Player>();
+
+        public bool IsMenuOpen { get; private set; } = false;
+
         private void Awake()
         {
             if (Instance != null)
@@ -66,6 +70,8 @@ namespace Assets.Scripts
                 _menuCanvas.SetActive(true);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+
+                IsMenuOpen = true;
             }
         }
 
@@ -76,6 +82,8 @@ namespace Assets.Scripts
                 _menuCanvas.SetActive(false);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+
+                IsMenuOpen = false;
             }
         }
 
@@ -90,8 +98,6 @@ namespace Assets.Scripts
         /// <summary>
         /// Key : PlayerId == transform.name
         /// </summary>
-        private static Dictionary<string, Player> _players = new Dictionary<string, Player>();
-
         public static void RegisterPlayer(string netId, Player player)
         {
             string playerId = PLAYER_ID_PREFIX + netId;

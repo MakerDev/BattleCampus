@@ -33,7 +33,7 @@ namespace Assets.Scripts
         {
             _currentWeapon = _weaponManager.GetCurrentWeapon();
 
-            if (!isLocalPlayer)
+            if (!isLocalPlayer || GameManager.Instance.IsMenuOpen)
             {
                 return;
             }
