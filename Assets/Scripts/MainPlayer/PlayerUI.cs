@@ -41,10 +41,10 @@ namespace Assets.Scripts
 
         public void SetCrossHair(bool onTarget)
         {
-            //if (_wasOnTarget == onTarget)
-            //{
-            //    return;
-            //}
+            if (_wasOnTarget == onTarget)
+            {
+                return;
+            }
 
             _wasOnTarget = onTarget;
 

@@ -122,11 +122,18 @@ namespace Assets.Scripts
         [Command]
         void CmdPlayerGotShot(string playerId, float damage, string shooter)
         {
-            Debug.Log(playerId + " has been shot by damage " + damage + $" by {shooter}");
-
+            //Debug.Log(playerId + " has been shot by damage " + damage + $" by {shooter}");
             Player player = GameManager.GetPlayer(playerId);
+            player.TakeDamage(damage);
 
-            player.RpcTakeDamage(damage, shooter);
+            player.RpcTakeDamage(player.CurrentHealth, shooter);
+
+            //Does this increase too much server load..?
+            //Server side respawn
+            if (player.CurrentHealth <= 0)
+            {
+                player.CurrentHealth = 100;
+            }
         }
     }
 }

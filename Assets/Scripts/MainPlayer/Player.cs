@@ -22,8 +22,8 @@ namespace Assets.Scripts
         [SerializeField]
         private float _maxHealth = 100;
 
-        [SyncVar]
         private float _currentHealth;
+        public float CurrentHealth { get { return _currentHealth; } set { _currentHealth = value; } }
         #endregion
 
         #region SETUP
@@ -66,6 +66,8 @@ namespace Assets.Scripts
             {
                 _playerName = $"Player{netId}";
             }
+
+            //TODO: Fetch all player info from server..?
 
             _playerInfo.SetPlayer(this);
         }
@@ -114,6 +116,8 @@ namespace Assets.Scripts
                 GetComponent<PlayerSetup>().PlayerUIInstance.SetActive(true);
             }
 
+            //This is client side health regen
+            CurrentHealth = _maxHealth;
             Debug.Log($"Player Setup is called on Player{netId}");
             CmdBroadCastNewPlayerSetUp();
         }
@@ -176,15 +180,14 @@ namespace Assets.Scripts
         }
 
         [ClientRpc]
-        public void RpcTakeDamage(float damage, string shooterName)
+        public void RpcTakeDamage(float newHealth, string shooterName)
         {
             if (IsDead)
             {
                 return;
             }
 
-            _currentHealth -= damage;
-
+            _currentHealth = newHealth;
             Debug.Log(transform.name + " now has " + _currentHealth + " health.");
 
             if (_currentHealth <= 0)
@@ -192,6 +195,12 @@ namespace Assets.Scripts
                 Die();
                 GameManager.Instance.PrintMessage($"{PlayerName} is killed by {shooterName}", null);
             }
+        }
+
+        [Server]
+        public void TakeDamage(float damage)
+        {
+            _currentHealth -= damage;
         }
 
         public float GetCurrentHpRatio()

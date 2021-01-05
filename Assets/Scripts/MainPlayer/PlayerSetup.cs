@@ -46,7 +46,6 @@ namespace Assets.Scripts
                     component.enabled = false;
                 }
 
-                //gameObject.layer = LayerMask.NameToLayer(_remoteLayerName);
                 Utils.SetLayerRecursive(gameObject, LayerMask.NameToLayer(_remoteLayerName));
             }
             else
