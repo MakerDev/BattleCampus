@@ -122,7 +122,7 @@ namespace Assets.Scripts
         void CmdPlayerGotShot(string playerId, float damage, string shooter)
         {
             //Debug.Log(playerId + " has been shot by damage " + damage + $" by {shooter}");
-            Player player = GameManager.GetPlayer(playerId);
+            Player player = GameManager.Instance.GetPlayer(playerId);
             player.TakeDamage(damage);
 
             player.RpcTakeDamage(player.CurrentHealth, shooter);

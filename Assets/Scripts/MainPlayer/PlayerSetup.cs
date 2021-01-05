@@ -37,7 +37,7 @@ namespace Assets.Scripts
             string netId = GetComponent<NetworkIdentity>().netId.ToString();
             Player player = GetComponent<Player>();
 
-            GameManager.RegisterPlayer(netId, player);
+            GameManager.Instance.RegisterPlayer(netId, player);
 
             if (!isLocalPlayer)
             {
@@ -93,7 +93,7 @@ namespace Assets.Scripts
                 GameManager.Instance.SetSceneCameraActive(true);                
             }
 
-            GameManager.UnRegisterPlayer(transform.name);
+            GameManager.Instance.UnRegisterPlayer(transform.name);
         }
     }
 }

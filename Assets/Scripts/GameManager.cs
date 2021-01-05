@@ -1,6 +1,8 @@
 ﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +26,12 @@ namespace Assets.Scripts
         private GameObject _textObjectPrefab;
         [SerializeField]
         private InputField _chatInputField;
+
+        [SerializeField]
+        private GameObject _playerListPanel;
+        [SerializeField]
+        private GameObject _playerListItemPrefab;
+        private List<GameObject> _playerListItems = new List<GameObject>();
 
         private static Dictionary<string, Player> _players = new Dictionary<string, Player>();
 
@@ -204,23 +212,51 @@ namespace Assets.Scripts
         /// <summary>
         /// Key : PlayerId == transform.name
         /// </summary>
-        public static void RegisterPlayer(string netId, Player player)
+        public void RegisterPlayer(string netId, Player player)
         {
             string playerId = PLAYER_ID_PREFIX + netId;
             _players.Add(playerId, player);
             player.transform.name = playerId;
 
+            if (isClient)
+            {
+                RefreshPlayerList();
+            }
+
             Debug.Log($"Client : {playerId} is registered");
         }
 
-        public static void UnRegisterPlayer(string playerId)
+        public void UnRegisterPlayer(string playerId)
         {
             _players.Remove(playerId);
+
+            if (isClient)
+            {
+                RefreshPlayerList();
+            }
 
             Debug.Log($"Client : {playerId} is removed");
         }
 
-        public static Player GetPlayer(string playerId)
+        public void RefreshPlayerList()
+        {
+            foreach (var item in _playerListItems)
+            {
+                Destroy(item);
+            }
+
+            _playerListItems.Clear();
+
+            foreach (var player in _players.Values)
+            {
+                var playerListItem = Instantiate(_playerListItemPrefab, _playerListPanel.transform);
+                _playerListItems.Add(playerListItem);
+                var playerListItemText = playerListItem.GetComponent<Text>();
+                playerListItemText.text = player.PlayerName;
+            }
+        }
+
+        public Player GetPlayer(string playerId)
         {
             if (_players.ContainsKey(playerId))
             {
@@ -229,6 +265,7 @@ namespace Assets.Scripts
 
             throw new System.Exception($"No player with ID {playerId} is found");
         }
+
         //private void OnGUI()
         //{
         //    GUILayout.BeginArea(new Rect(200, 200, 200, 200));

@@ -98,6 +98,7 @@ namespace Assets.Scripts
             }
 
             _playerInfo.SetPlayer(this);
+            GameManager.Instance.RefreshPlayerList();
         }
 
         public void SetName(string newName)
