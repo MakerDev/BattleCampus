@@ -1,11 +1,21 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public class GameManager : MonoBehaviour
+    [Serializable]
+    public class ChatMessage
+    {
+        public string Message;
+        public string Sender;
+        public Text TextObject;
+    }
+
+    public class GameManager : NetworkBehaviour
     {
         public static GameManager Instance;
         public MatchSetting MatchSetting;
@@ -17,9 +27,19 @@ namespace Assets.Scripts
         [SerializeField]
         private InputField _renameInputField;
 
+        [SerializeField]
+        private GameObject _chatPanel;
+        [SerializeField]
+        private GameObject _textObjectPrefab;
+        [SerializeField]
+        private InputField _chatInputField;
+
         private static Dictionary<string, Player> _players = new Dictionary<string, Player>();
 
         public bool IsMenuOpen { get; private set; } = false;
+
+        private const int MAX_MESSAGES = 10;
+        private List<ChatMessage> _messages = new List<ChatMessage>();
 
         private void Awake()
         {
@@ -40,6 +60,22 @@ namespace Assets.Scripts
 
         private void Update()
         {
+            if (_chatInputField.text != "")
+            {
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    CmdPrintMessage(_chatInputField.text, Player.LocalPlayer.PlayerName);
+                    _chatInputField.text = "";
+                }
+            }
+            else
+            {
+                if(!_chatInputField.isFocused && Input.GetKeyDown(KeyCode.Return))
+                {
+                    _chatInputField.ActivateInputField();
+                }
+            }
+
             if (Input.GetButtonDown("Cancel"))
             {
                 if (_menuCanvas.activeSelf)
@@ -51,6 +87,40 @@ namespace Assets.Scripts
                     OpenMenu();
                 }
             }
+        }
+
+        public void SetChatPanel(GameObject chatPanel)
+        {
+            _chatPanel = chatPanel;
+        }
+
+        [Command(ignoreAuthority =true)]
+        public void CmdPrintMessage(string message, string sender)
+        {
+            RpcPrintMessage(message, sender);
+        }
+        
+        [ClientRpc]
+        public void RpcPrintMessage(string message, string sender)
+        {
+            PrintMessage(message, sender);
+        }
+
+        public void PrintMessage(string message, string sender)
+        {
+            if (_messages.Count >= MAX_MESSAGES)
+            {
+                Destroy(_messages[0].TextObject.gameObject);
+                _messages.RemoveAt(0);
+            }
+
+            var chatMessage = new ChatMessage();
+            chatMessage.Message = message;
+            chatMessage.Sender = sender;
+            chatMessage.TextObject = Instantiate(_textObjectPrefab, _chatPanel.transform).GetComponent<Text>();
+            chatMessage.TextObject.text = string.IsNullOrEmpty(sender) ? message : $"{sender}: {message}";
+
+            _messages.Add(chatMessage);
         }
 
         public void SetSceneCameraActive(bool isActive)

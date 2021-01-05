@@ -61,11 +61,11 @@ namespace Assets.Scripts
         [Command]
         private void CmdOnHit(Vector3 position, Vector3 normal)
         {
-            RpcDoHitEffect(position, normal);
+            RpcInstantiateHitEffect(position, normal);
         }
 
         [ClientRpc]
-        private void RpcDoHitEffect(Vector3 position, Vector3 normal)
+        private void RpcInstantiateHitEffect(Vector3 position, Vector3 normal)
         {
             GameObject hitEffect = Instantiate(_weaponManager.GetCurrentWeaponGraphics().HitEffectPrefab, position, Quaternion.LookRotation(normal));
             Destroy(hitEffect, 1.5f);
@@ -74,15 +74,14 @@ namespace Assets.Scripts
         [Command]
         private void CmdOnShoot()
         {
-            RpcDoShootEffect();
+            RpcPlayShootEffect();
         }
 
         [ClientRpc]
-        private void RpcDoShootEffect()
+        private void RpcPlayShootEffect()
         {
             _weaponManager.GetCurrentWeaponGraphics().MuzzleFlash.Play();
         }
-
 
         [Client]
         private void Shoot()
@@ -92,34 +91,32 @@ namespace Assets.Scripts
                 return;
             }
 
-
             CmdOnShoot();
 
-            RaycastHit raycastHit;
             Debug.Log($"Shoot!");
 
-            if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out raycastHit, _currentWeapon.Range, _layerMask))
+            if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out RaycastHit hit, _currentWeapon.Range, _layerMask))
             {
                 //We hit something
-                Debug.Log($"Hit : {raycastHit.collider.name}");
+                Debug.Log($"Hit : {hit.collider.name}");
 
-                if (raycastHit.collider.CompareTag(PLAYER_TAG))
+                if (hit.collider.CompareTag(PLAYER_TAG))
                 {
-                    CmdPlayershot(raycastHit.collider.name, _currentWeapon.Damage);
+                    CmdPlayerGotShot(hit.collider.name, _currentWeapon.Damage, Player.LocalPlayer.PlayerName);
                 }
 
-                CmdOnHit(raycastHit.point, raycastHit.normal);                
+                CmdOnHit(hit.point, hit.normal);
             }
         }
 
         [Command]
-        void CmdPlayershot(string playerId, float damage)
+        void CmdPlayerGotShot(string playerId, float damage, string shooter)
         {
-            Debug.Log(playerId + " has been shot by damage " + damage);
+            Debug.Log(playerId + " has been shot by damage " + damage + $" by {shooter}");
 
             Player player = GameManager.GetPlayer(playerId);
 
-            player.RpcTakeDamage(damage);
+            player.RpcTakeDamage(damage, shooter);
         }
     }
 }

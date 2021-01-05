@@ -10,6 +10,7 @@ namespace Assets.Scripts
     {
         public static Player LocalPlayer { get; private set; }
 
+        #region STATES
         [SyncVar]
         private bool _isDead = false;
         public bool IsDead
@@ -23,7 +24,9 @@ namespace Assets.Scripts
 
         [SyncVar]
         private float _currentHealth;
+        #endregion
 
+        #region SETUP
         [SerializeField]
         private Behaviour[] _disableOnDeath;
         [SerializeField]
@@ -35,17 +38,17 @@ namespace Assets.Scripts
         private GameObject _deatchEffect;
         [SerializeField]
         private GameObject _spawnEffect;
-
        
         [SerializeField]
         private PlayerInfoUI _playerInfo;
 
-        [SyncVar(hook = nameof(OnNameSet))]
-        private string _playerName = $"player";
+        private bool _isFirstSetup = true;
+        #endregion
 
+        [SyncVar(hook = nameof(OnNameSet))]
+        private string _playerName = "player";
         public string PlayerName { get { return _playerName; } }
 
-        private bool _isFirstSetup = true;
 
         private void Start()
         {
@@ -58,9 +61,23 @@ namespace Assets.Scripts
             {
                 LocalPlayer = this;
             }
+
+            _playerInfo.SetPlayer(this);
         }
-      
-        public void OnNameSet(string old, string newName)
+
+        public override void OnStopClient()
+        {
+            base.OnStopClient();
+            //TODO : Clear match info
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            //TODO : Stop server and sync server is dead to MatchServer
+        }
+
+        public void OnNameSet(string _, string newName)
         {
             if (isLocalPlayer)
             {
@@ -152,7 +169,7 @@ namespace Assets.Scripts
         }
 
         [ClientRpc]
-        public void RpcTakeDamage(float damage)
+        public void RpcTakeDamage(float damage, string shooterName)
         {
             if (IsDead)
             {
@@ -166,6 +183,7 @@ namespace Assets.Scripts
             if (_currentHealth <= 0)
             {
                 Die();
+                GameManager.Instance.PrintMessage($"{PlayerName} is killed by {shooterName}", null);
             }
         }
 

@@ -296,11 +296,11 @@ RectTransform:
   m_Father: {fileID: 8445655239935999398}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 193, y: 63.8}
-  m_Pivot: {x: 1, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 15, y: -15}
+  m_SizeDelta: {x: 193, y: 63.799988}
+  m_Pivot: {x: 0, y: 1}
 --- !u!222 &1838254655878315654
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -610,6 +610,7 @@ MonoBehaviour:
   _thrusterFuelFill: {fileID: 6603031700758125858}
   _hpBar: {fileID: 1737595198}
   _playerNameText: {fileID: 5132084084657166891}
+  _chatPanel: {fileID: 0}
 --- !u!1 &8445655240925408355
 GameObject:
   m_ObjectHideFlags: 0
