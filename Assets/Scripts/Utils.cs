@@ -1,10 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Utils
+    public static class Utils
     {
+        public static Guid ToGuid(this string str)
+        {
+            MD5 md5Hasher = MD5.Create();
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(str));
+
+            return new Guid(data);
+        }
+
         public static void SetLayerRecursive(GameObject gameObject, int newLayer)
         {
             if (gameObject == null)
