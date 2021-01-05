@@ -51,6 +51,19 @@ namespace Assets.Scripts
 
         private void Update()
         {
+            //TODO : find more intelligent way
+            if (IsMenuOpen)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+
+
             if (_chatInputField.text != "")
             {
                 if (Input.GetKeyDown(KeyCode.Return))
