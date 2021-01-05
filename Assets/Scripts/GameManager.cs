@@ -1,5 +1,4 @@
 ﻿using Mirror;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,14 +6,6 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    [Serializable]
-    public class ChatMessage
-    {
-        public string Message;
-        public string Sender;
-        public Text TextObject;
-    }
-
     public class GameManager : NetworkBehaviour
     {
         public static GameManager Instance;
@@ -70,7 +61,7 @@ namespace Assets.Scripts
             }
             else
             {
-                if(!_chatInputField.isFocused && Input.GetKeyDown(KeyCode.Return))
+                if (!_chatInputField.isFocused && Input.GetKeyDown(KeyCode.Return))
                 {
                     _chatInputField.ActivateInputField();
                 }
@@ -94,12 +85,12 @@ namespace Assets.Scripts
             _chatPanel = chatPanel;
         }
 
-        [Command(ignoreAuthority =true)]
+        [Command(ignoreAuthority = true)]
         public void CmdPrintMessage(string message, string sender)
         {
             RpcPrintMessage(message, sender);
         }
-        
+
         [ClientRpc]
         public void RpcPrintMessage(string message, string sender)
         {
@@ -118,9 +109,31 @@ namespace Assets.Scripts
             chatMessage.Message = message;
             chatMessage.Sender = sender;
             chatMessage.TextObject = Instantiate(_textObjectPrefab, _chatPanel.transform).GetComponent<Text>();
-            chatMessage.TextObject.text = string.IsNullOrEmpty(sender) ? message : $"{sender}: {message}";
+
+            var hasSender = string.IsNullOrEmpty(sender);
+
+            chatMessage.ChatType = hasSender ? ChatType.Info : ChatType.Player;
+            chatMessage.TextObject.text = hasSender ? message : $"{sender}: {message}";
+            chatMessage.TextObject.color = GetMessageColor(chatMessage.ChatType);
 
             _messages.Add(chatMessage);
+        }
+
+        private Color GetMessageColor(ChatType chatType)
+        {
+            switch (chatType)
+            {
+                case ChatType.Info:
+                    return Color.green;
+
+                case ChatType.Player:
+                    return Color.black;
+
+                default:
+                    break;
+            }
+
+            return Color.black;
         }
 
         public void SetSceneCameraActive(bool isActive)
