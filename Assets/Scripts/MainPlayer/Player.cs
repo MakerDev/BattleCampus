@@ -68,8 +68,13 @@ namespace Assets.Scripts
             }
 
             //TODO: Fetch all player info from server..?
-
             _playerInfo.SetPlayer(this);
+        }
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+
+            GameManager.Instance.PrintMessage($"{PlayerName} joined", null, ChatType.Info);
         }
 
         public override void OnStopClient()
@@ -77,6 +82,8 @@ namespace Assets.Scripts
             base.OnStopClient();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            GameManager.Instance.PrintMessage($"{PlayerName} leaved", null, ChatType.Info);
             //TODO : Clear match info
         }
 

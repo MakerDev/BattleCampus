@@ -110,7 +110,7 @@ namespace Assets.Scripts
             PrintMessage(message, sender);
         }
 
-        public void PrintMessage(string message, string sender)
+        public void PrintMessage(string message, string sender, ChatType chatType = ChatType.None)
         {
             if (_messages.Count >= MAX_MESSAGES)
             {
@@ -125,7 +125,15 @@ namespace Assets.Scripts
 
             var hasSender = string.IsNullOrEmpty(sender);
 
-            chatMessage.ChatType = hasSender ? ChatType.Info : ChatType.Player;
+            if (chatType != ChatType.None)
+            {
+                chatMessage.ChatType = chatType;
+            }
+            else
+            {
+                chatMessage.ChatType = hasSender ? ChatType.KillInfo : ChatType.Player;
+            }
+
             chatMessage.TextObject.text = hasSender ? message : $"{sender}: {message}";
             chatMessage.TextObject.color = GetMessageColor(chatMessage.ChatType);
 
@@ -137,11 +145,13 @@ namespace Assets.Scripts
             switch (chatType)
             {
                 case ChatType.Info:
-                    return Color.red;
+                    return Color.green;
 
                 case ChatType.Player:
                     return Color.black;
 
+                case ChatType.KillInfo:
+                    return Color.red;
                 default:
                     break;
             }

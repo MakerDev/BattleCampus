@@ -8,6 +8,8 @@ namespace Assets.Scripts
     {
         Info,
         Player,
+        KillInfo,
+        None,
     }
 
     [Serializable]
