@@ -20,6 +20,11 @@ namespace Assets.Scripts
 
         void Update()
         {
+            if (GameManager.Instance.IsMenuOpen)
+            {
+                return;
+            }
+
             float mouseX = Input.GetAxis("Mouse X") * MouseSensitivity * Time.fixedDeltaTime;
             float mouseY = Input.GetAxis("Mouse Y") * MouseSensitivity * Time.fixedDeltaTime;
 
