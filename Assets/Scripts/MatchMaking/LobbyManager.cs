@@ -27,7 +27,7 @@ namespace Assets.Scripts.Networking
         private GameObject _matchUIPrefab;
         [SerializeField]
         private GameObject _matchUIPanel;
-        
+
         private List<GameObject> _matchUIInstances = new List<GameObject>();
 
         [SerializeField]
@@ -97,6 +97,14 @@ namespace Assets.Scripts.Networking
             });
         }
 
+        public void MoveToMatch(MatchDTO match)
+        {
+            //Configure MatchManager
+            _matchManager.ConfigureMatchInfo(match);
+            //TODO : Move to  GameScene 
+            SceneManager.LoadScene("GameScene");
+        }
+
         public async Task CreateNewMatchAsync()
         {
             var result = await MatchServer.Instance.CreateMatchAsync("Room1");
@@ -104,13 +112,9 @@ namespace Assets.Scripts.Networking
             var creationResultText = $"{result.IsCreationSuccess} : {result.Match.MatchID}";
             _matchCreateResultText.text = creationResultText;
 
-            //Configure MatchManager
-
             if (result.IsCreationSuccess)
             {
-                _matchManager.ConfigureMatchInfo(result.Match);
-                //TODO : Move to  GameScene 
-                SceneManager.LoadScene("GameScene");
+                MoveToMatch(result.Match);
             }
         }
     }
