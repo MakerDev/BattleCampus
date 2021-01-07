@@ -15,6 +15,9 @@ using UnityEngine.VR;
 
 namespace Assets.Scripts.MatchMaking
 {
+    /// <summary>
+    /// Hub for Match API Server
+    /// </summary>
     public class MatchServer
     {
         private const string BASE_ADDRESS = "https://localhost:5001/api/";
@@ -59,21 +62,32 @@ namespace Assets.Scripts.MatchMaking
 
         public async Task<MatchCreationResultDTO> CreateMatchAsync(string name)
         {
-            var result = await _httpClient.PostAsync($"matches/create?name={name}", null);
+            var userJson = JsonConvert.SerializeObject(UserManager.Instacne.User);
+            var userInfo = new StringContent(userJson, encoding: Encoding.UTF8, "application/json");
 
-            var matchCreationResultString = await result.Content.ReadAsStringAsync();
+            var response = await _httpClient.PostAsync($"matches/create?name={name}", userInfo);
+            var matchCreationResultString = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<MatchCreationResultDTO>(matchCreationResultString);
         }
 
-        public Task NotifyPlayerJoinAsync(string ip, string matchID, string playerId)
+        public async Task<MatchJoinResultDTO> JoinMatch(string serverIp, string matchID, User user)
         {
-            throw new NotImplementedException();
+            var userJson = JsonConvert.SerializeObject(user);
+            var userInfo = new StringContent(userJson, encoding: Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"matches/join?serverIp={serverIp}&matchID={matchID}", userInfo);
+            var matchJoinResultString = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<MatchJoinResultDTO>(matchJoinResultString);
         }
 
-        public Task NotifyPlayerExitAsync(string ip, string matchID, string playerId)
+        public async Task NotifyPlayerExitAsync(string serverIp, string matchID, User user)
         {
-            throw new NotImplementedException();
+            var userJson = JsonConvert.SerializeObject(user);
+            var userInfo = new StringContent(userJson, encoding: Encoding.UTF8, "application/json");
+
+            await _httpClient.PostAsync($"matches/notify/exit?serverIp={serverIp}&matchID={matchID}", userInfo);
         }
 
         public async Task<bool> RegisterServerAsync(string serverName, IpPortInfo ipPortInfo, int maxMatches = 5)
@@ -85,10 +99,10 @@ namespace Assets.Scripts.MatchMaking
             return response.IsSuccessStatusCode;
         }
 
-        public async Task UnRegisterServerAsync(string ipAdrress)
+        public async Task UnRegisterServerAsync(string ipAddress)
         {
-            await _httpClient.DeleteAsync($"server/unregister/{ipAdrress}");
-            Debug.Log($"Unregister server {ipAdrress}");
+            await _httpClient.DeleteAsync($"server/unregister/{ipAddress}");
+            Debug.Log($"Unregister server {ipAddress}");
         }
     }
 }
