@@ -118,7 +118,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8981714918180217857}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6211443348355189915}
+        m_MethodName: JoinMatch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8981714918223500172
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,8 +449,9 @@ GameObject:
   - component: {fileID: 8981714918820656086}
   - component: {fileID: 8981714918820656104}
   - component: {fileID: 8981714918820656105}
+  - component: {fileID: 6211443348355189915}
   m_Layer: 5
-  m_Name: RoomListItemUI
+  m_Name: MatchListItemUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -504,6 +516,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6211443348355189915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8981714918820656087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e3e734050e83de44b7d2bb4153b9af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _matchNameText: {fileID: 8981714918910207387}
+  _currentPlayerInfoText: {fileID: 8981714918297268867}
+  _matchIDText: {fileID: 8981714918244248892}
+  _joinButton: {fileID: 8981714918180217870}
 --- !u!1 &8981714918910207385
 GameObject:
   m_ObjectHideFlags: 0
