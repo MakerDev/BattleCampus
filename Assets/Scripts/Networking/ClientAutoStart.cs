@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClientServerJoiner : MonoBehaviour
+public class ClientAutoStart : MonoBehaviour
 {
     [SerializeField]
     private NetworkManager _networkManager;
@@ -22,6 +22,13 @@ public class ClientServerJoiner : MonoBehaviour
         {
             Debug.Log($"===Client Build===");
             var matchManager = GameObject.Find("MatchManager").GetComponent<MatchManager>();
+
+            if (matchManager==null)
+            {
+                Debug.LogError("Couldn't find MatchManager");
+                return;
+            }
+
             JoinServer(matchManager.IpPortInfo);
         }
         else
