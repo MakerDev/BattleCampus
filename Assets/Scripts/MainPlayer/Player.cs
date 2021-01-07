@@ -90,17 +90,17 @@ namespace Assets.Scripts
 
         public override async void OnStopClient()
         {
+            GameManager.Instance.PrintMessage($"{PlayerName} leaved", null, ChatType.Info);
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
             if (isLocalPlayer)
             {
                 await MatchManager.Instance.NotifyPlayerExitAsync();
             }
 
             base.OnStopClient();
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-
-            GameManager.Instance.PrintMessage($"{PlayerName} leaved", null, ChatType.Info);
-            //TODO : Clear match info
         }
 
         public void OnNameSet(string _, string newName)
