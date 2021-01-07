@@ -8,16 +8,21 @@ namespace Assets.Scripts.MatchMaking
 {
     public class MatchManager : MonoBehaviour
     {
-        public static MatchManager Instance;
+        public static MatchManager Instance = null;
 
         public MatchDTO Match { get; private set; }
         public IpPortInfo IpPortInfo { get; private set; } = new IpPortInfo();
 
-        void Start()
+        private void Awake()
         {
-            DontDestroyOnLoad(this);
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(this.gameObject);
+                return;
+            }
 
-            Instance = this;
+            Destroy(this.gameObject);
         }
 
         public void ConfigureMatchInfo(MatchDTO match)
@@ -28,14 +33,14 @@ namespace Assets.Scripts.MatchMaking
 
         //This means the player has exited game or that the game is ended.
         //This is not synced as it's not a NetworkBehavior
-        private async void OnDisable()
-        {
-            await NotifyPlayerExitAsync();
-        }
+        //private async void OnDisable()
+        //{
+        //    await NotifyPlayerExitAsync();
+        //}
 
         public async Task NotifyPlayerExitAsync()
         {
-            await MatchServer.Instance.NotifyPlayerExitAsync(IpPortInfo.IpAddress, Match.MatchID, UserManager.Instacne.User);
+            await MatchServer.Instance.NotifyPlayerExitAsync(IpPortInfo.IpAddress, Match.MatchID, UserManager.Instance.User);
         }
     }
 }

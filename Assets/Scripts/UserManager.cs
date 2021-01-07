@@ -6,14 +6,19 @@ namespace Assets.Scripts
 {
     public class UserManager : MonoBehaviour
     {
-        public static UserManager Instacne;
+        public static UserManager Instance;
         public User User { get; private set; } = new GuestUser();
 
-        private void Start()
+        private void Awake()
         {
-            Instacne = this;
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(this.gameObject);
+                return;
+            }
 
-            DontDestroyOnLoad(this);
+            Destroy(this.gameObject);
         }
     }
 }
