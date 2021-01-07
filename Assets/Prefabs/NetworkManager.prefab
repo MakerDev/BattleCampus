@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2050733299}
   - component: {fileID: 5797143323073332327}
   - component: {fileID: 8768039054813074159}
+  - component: {fileID: 589564794}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -115,12 +116,13 @@ MonoBehaviour:
   offlineScene: 
   onlineScene: 
   transport: {fileID: 5504795481475633529}
-  networkAddress: localhost
-  maxConnections: 4
-  disconnectInactiveConnections: 0
+  networkAddress: 127.0.0.1
+  maxConnections: 35
+  disconnectInactiveConnections: 1
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 0}
+  playerPrefab: {fileID: 2774195178687364979, guid: 62825ab3d977c3f469a97fc6ba00dc68,
+    type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
@@ -139,3 +141,18 @@ MonoBehaviour:
   showGUI: 1
   offsetX: 0
   offsetY: 0
+--- !u!114 &589564794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198846753230582387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2205d9232268a484bb59970ef201a27c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _networkManager: {fileID: 5797143323073332327}
+  _webTransport: {fileID: 2709915816288704298}
+  _telepathyTransport: {fileID: 2050733299}
