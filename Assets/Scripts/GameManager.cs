@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using Assets.Scripts.MatchMaking;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,9 +56,36 @@ namespace Assets.Scripts
         private void Start()
         {
             _menuCanvas.SetActive(false);
+
+            CmdSetMatchId(MatchManager.Instance.Match.MatchID.ToGuid());
         }
 
+        [Command]
+        public void CmdSetMatchId(Guid matchID)
+        {
+            GetComponent<NetworkMatchChecker>().matchId = matchID;
+        }        
+
         private void Update()
+        {
+            HandleCursor();
+
+            HandleChat();
+
+            if (Input.GetButtonDown("Cancel"))
+            {
+                if (_menuCanvas.activeSelf)
+                {
+                    Resume();
+                }
+                else
+                {
+                    OpenMenu();
+                }
+            }
+        }
+
+        private void HandleCursor()
         {
             //TODO : find more intelligent way
             if (IsMenuOpen)
@@ -70,8 +98,10 @@ namespace Assets.Scripts
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
+        }
 
-
+        private void HandleChat()
+        {
             if (_chatInputField.text != "")
             {
                 if (Input.GetKeyDown(KeyCode.Return))
@@ -85,18 +115,6 @@ namespace Assets.Scripts
                 if (!_chatInputField.isFocused && Input.GetKeyDown(KeyCode.Return))
                 {
                     _chatInputField.ActivateInputField();
-                }
-            }
-
-            if (Input.GetButtonDown("Cancel"))
-            {
-                if (_menuCanvas.activeSelf)
-                {
-                    Resume();
-                }
-                else
-                {
-                    OpenMenu();
                 }
             }
         }
