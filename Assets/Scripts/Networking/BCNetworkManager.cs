@@ -44,13 +44,6 @@ namespace Assets.Scripts.Networking
            });
         }
 
-        public override void OnClientDisconnect(NetworkConnection conn)
-        {
-            base.OnClientDisconnect(conn);
-
-            Debug.LogError("Disconnect");
-        }
-
         public override async void OnStopServer()
         {
             //TODO : Make graceful stop.
