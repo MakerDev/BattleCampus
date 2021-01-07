@@ -43,7 +43,7 @@ namespace Assets.Scripts
 
         public async Task JoinMatchAsync()
         {
-            var result = await MatchServer.Instance.JoinMatch(_match.IpPortInfo.IpAddress, _match.MatchID, UserManager.Instacne.User);
+            var result = await MatchServer.Instance.JoinMatch(_match.IpPortInfo.IpAddress, _match.MatchID, UserManager.Instance.User);
 
             if (result.JoinSucceeded == false)
             {

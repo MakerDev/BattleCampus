@@ -62,7 +62,7 @@ namespace Assets.Scripts.MatchMaking
 
         public async Task<MatchCreationResultDTO> CreateMatchAsync(string name)
         {
-            var userJson = JsonConvert.SerializeObject(UserManager.Instacne.User);
+            var userJson = JsonConvert.SerializeObject(UserManager.Instance.User);
             var userInfo = new StringContent(userJson, encoding: Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync($"matches/create?name={name}", userInfo);

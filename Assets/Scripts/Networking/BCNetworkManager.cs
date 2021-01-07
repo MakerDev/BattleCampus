@@ -35,13 +35,13 @@ namespace Assets.Scripts.Networking
             var name = $"Server:{networkAddress}";
 
             MatchServer.Instance.RegisterServerAsync(name, serverInfo).ContinueWith(t =>
-           {
-               if (t.Result == false)
-               {
+            {
+                if (t.Result == false)
+                {
                     //TODO : Shutdown server instance and report it.
                     //Shutdown();
                 }
-           });
+            });
         }
 
         public override async void OnStopServer()

@@ -113,7 +113,7 @@ MonoBehaviour:
   autoStartServerBuild: 1
   showDebugMessages: 0
   serverTickRate: 30
-  offlineScene: 
+  offlineScene: Assets/Scenes/Lobby.unity
   onlineScene: 
   transport: {fileID: 5504795481475633529}
   networkAddress: 127.0.0.1

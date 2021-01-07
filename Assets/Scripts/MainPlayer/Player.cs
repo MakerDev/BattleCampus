@@ -88,8 +88,13 @@ namespace Assets.Scripts
             matchChecker.matchId = matchGuid;
         }
 
-        public override void OnStopClient()
+        public override async void OnStopClient()
         {
+            if (isLocalPlayer)
+            {
+                await MatchManager.Instance.NotifyPlayerExitAsync();
+            }
+
             base.OnStopClient();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
