@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using Assets.Scripts.MatchMaking;
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -24,6 +25,9 @@ namespace Assets.Scripts
 
         private float _currentHealth;
         public float CurrentHealth { get { return _currentHealth; } set { _currentHealth = value; } }
+
+        //For lobby
+        public bool IsReady { get; private set; } = false;
         #endregion
 
         #region SETUP
@@ -49,28 +53,39 @@ namespace Assets.Scripts
         private string _playerName = "player";
         public string PlayerName { get { return _playerName; } }
 
-
         private void Start()
         {
-            if (isLocalPlayer)
-            {
-                LocalPlayer = this;
-            }
-
             _currentHealth = _maxHealth;
 
             //If this is local player, set player name manually because this script being called 'Start' 
             //means that this is joining the existing room and other players' name will be automatically synced.
             if (isLocalPlayer)
             {
+                LocalPlayer = this;
+
                 string netId = GetComponent<NetworkIdentity>().netId.ToString();
                 var newName = $"Player{netId}";
                 SetName(newName);
                 GameManager.Instance.CmdPrintMessage($"{newName} joined!", null, ChatType.Info);
+
+                //TODO : Report
             }
 
+            CmdSetMatchChecker(MatchManager.Instance.Match.MatchID.ToGuid());
             //TODO: Fetch all player info from server..?
             _playerInfo.SetPlayer(this);
+        }
+
+        public override void OnStartLocalPlayer()
+        {
+            base.OnStartLocalPlayer();
+        }
+
+        [Command]
+        public void CmdSetMatchChecker(Guid matchGuid)
+        {
+            var matchChecker = GetComponent<NetworkMatchChecker>();
+            matchChecker.matchId = matchGuid;
         }
 
         public override void OnStopClient()
@@ -81,12 +96,6 @@ namespace Assets.Scripts
 
             GameManager.Instance.PrintMessage($"{PlayerName} leaved", null, ChatType.Info);
             //TODO : Clear match info
-        }
-
-        public override void OnStopServer()
-        {
-            base.OnStopServer();
-            //TODO : Stop server and sync server is dead to MatchServer
         }
 
         public void OnNameSet(string _, string newName)
