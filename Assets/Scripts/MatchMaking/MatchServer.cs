@@ -40,8 +40,6 @@ namespace Assets.Scripts.MatchMaking
                 return null;
             }
 
-            Debug.Log(result.downloadHandler.text);
-
             return JsonConvert.DeserializeObject<List<MatchDTO>>(result.downloadHandler.text);
         }
 

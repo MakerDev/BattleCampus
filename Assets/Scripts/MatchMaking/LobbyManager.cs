@@ -44,25 +44,33 @@ namespace Assets.Scripts.Networking
 
         private List<GameObject> _matchUIs = new List<GameObject>();
 
+        private UniTask _fetchTask;
+        private bool _fetchRecursively = true;
+
         private void Start()
         {
             Instance = this;
 
             _requestResultText.text = "";
 
-            //StartCoroutine(Run());
+            FetchRecursive();
         }
 
+        //TODO : implement cancellation
         private void OnDestroy()
         {
-            StopAllCoroutines();
+            _fetchRecursively = false;
         }
 
-        private IEnumerator Run()
+        private async void FetchRecursive()
         {
-            FetchAllMatchesAsync();
+            while (_fetchRecursively)
+            {
+                _fetchTask = FetchAllMatchesAsync();
 
-            yield return new WaitForSecondsRealtime(3f);
+                await _fetchTask;
+                await UniTask.Delay(2500);
+            }
         }
 
         public async void RefreshLobby()
