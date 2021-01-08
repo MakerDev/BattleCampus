@@ -2,6 +2,7 @@
 using BattleCampusMatchServer.Models;
 using Mirror;
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,29 +13,44 @@ namespace Assets.Scripts.Networking
 {
     public class BCNetworkManager : NetworkManager
     {
+        private IpPortInfo ConfigureIpPortInfo()
+        {
+            var arguments = Environment.GetCommandLineArgs();
+
+            var ipPortInfo = new IpPortInfo();
+
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                var arg = arguments[i];
+
+                if (arg == "-ip")
+                {
+                    ipPortInfo.IpAddress = arguments[i + 1];
+                }
+                else if (arg == "-desktopPort")
+                {
+                    ipPortInfo.DesktopPort = int.Parse(arguments[i + 1]);
+                }
+                else if (arg == "-websocketPort")
+                {
+                    ipPortInfo.WebsocketPort = int.Parse(arguments[i + 1]);
+                }
+            }
+
+            return ipPortInfo;
+        }
+
         public override void OnStartServer()
         {
             base.OnStartServer();
 
-            networkAddress = Dns.GetHostEntry(Dns.GetHostName())
-                .AddressList.First((x) =>
-                {
-                    return x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork;
-                }).ToString();
+            var serverIpPortInfo = ConfigureIpPortInfo();
 
-            //TOOD : Send server open api call to the match server
-            var serverInfo = new IpPortInfo
-            {
-                IpAddress = networkAddress,
-                DesktopPort = 7777,
-                WebsocketPort = 7778,
-            };
+            Debug.Log("IP : " + serverIpPortInfo.IpAddress);
 
-            Debug.Log("IP : " + networkAddress);
+            var name = $"Server:{serverIpPortInfo.IpAddress}";
 
-            var name = $"Server:{networkAddress}";
-
-            MatchServer.Instance.RegisterServerAsync(name, serverInfo).ContinueWith(t =>
+            MatchServer.Instance.RegisterServerAsync(name, serverIpPortInfo).ContinueWith(t =>
             {
                 if (t.Result == false)
                 {

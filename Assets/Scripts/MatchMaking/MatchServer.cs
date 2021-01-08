@@ -20,8 +20,8 @@ namespace Assets.Scripts.MatchMaking
     /// </summary>
     public class MatchServer
     {
-        private const string BASE_ADDRESS = "https://localhost:5001/api/";
-        //private const string BASE_ADDRESS = "https://battlecampusmatchserver.azurewebsites.net";
+        //private const string BASE_ADDRESS = "https://localhost:5001/api/";
+        private const string BASE_ADDRESS = "https://battlecampusmatchserver.azurewebsites.net/api/";
 
         private HttpClient _httpClient;
 
