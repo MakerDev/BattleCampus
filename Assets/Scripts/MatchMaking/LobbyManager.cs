@@ -114,7 +114,8 @@ namespace Assets.Scripts.Networking
         public void MoveToMatch(MatchDTO match)
         {
             //Configure MatchManager
-            _matchManager.ConfigureMatchInfo(match);
+            //_matchManager.ConfigureMatchInfo(match);
+            MatchManager.Instance.ConfigureMatchInfo(match);
             //TODO : Move to  GameScene 
             SceneManager.LoadScene("GameScene");
         }

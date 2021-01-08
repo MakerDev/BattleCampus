@@ -434,6 +434,8 @@ MonoBehaviour:
   _spawnEffect: {fileID: 7782183243299101248, guid: 19b720091595d114a86bd698045c5508,
     type: 3}
   _playerInfo: {fileID: 3014602337690991772}
+  _chatHubPrefab: {fileID: 1462051319864756536, guid: 271471916a114ab4495474a548c6d806,
+    type: 3}
 --- !u!95 &3698028248341751151
 Animator:
   serializedVersion: 3

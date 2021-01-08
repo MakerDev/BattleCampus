@@ -56,15 +56,20 @@ namespace Assets.Scripts
         private void Start()
         {
             _menuCanvas.SetActive(false);
-
-            CmdSetMatchId(MatchManager.Instance.Match.MatchID.ToGuid());
         }
 
-        [Command]
-        public void CmdSetMatchId(Guid matchID)
+        public override void OnStartClient()
         {
-            GetComponent<NetworkMatchChecker>().matchId = matchID;
-        }        
+            base.OnStartClient();
+
+        }
+
+        //[Command(ignoreAuthority = true)]
+        //public void CmdSetMatchId(Guid matchID)
+        //{
+        //    Debug.Log("Mathc ID Set - " + matchID.ToString());
+        //    GetComponent<NetworkMatchChecker>().matchId = matchID;
+        //}
 
         private void Update()
         {
@@ -106,7 +111,10 @@ namespace Assets.Scripts
             {
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    CmdPrintMessage(_chatInputField.text, Player.LocalPlayer.PlayerName, ChatType.Player);
+                    if (ChatHub.Instance != null)
+                    {
+                        ChatHub.Instance.PrintMessage(_chatInputField.text, Player.LocalPlayer.PlayerName, ChatType.Player);
+                    }
                     _chatInputField.text = "";
                 }
             }
@@ -124,18 +132,7 @@ namespace Assets.Scripts
             _chatPanel = chatPanel;
         }
 
-        [Command(ignoreAuthority = true)]
-        public void CmdPrintMessage(string message, string sender, ChatType chatType)
-        {
-            RpcPrintMessage(message, sender, chatType);
-        }
-
-        [ClientRpc]
-        public void RpcPrintMessage(string message, string sender, ChatType chatType)
-        {
-            PrintMessage(message, sender, chatType);
-        }
-
+        [Client]
         public void PrintMessage(string message, string sender, ChatType chatType = ChatType.None)
         {
             if (_messages.Count >= MAX_MESSAGES)

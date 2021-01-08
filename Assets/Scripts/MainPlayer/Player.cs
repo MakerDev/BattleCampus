@@ -53,9 +53,19 @@ namespace Assets.Scripts
         private string _playerName = "player";
         public string PlayerName { get { return _playerName; } }
 
+        [SerializeField]
+        public GameObject _chatHubPrefab;
+
         private void Start()
         {
             _currentHealth = _maxHealth;
+
+            _playerInfo.SetPlayer(this);
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
 
             //If this is local player, set player name manually because this script being called 'Start' 
             //means that this is joining the existing room and other players' name will be automatically synced.
@@ -63,22 +73,30 @@ namespace Assets.Scripts
             {
                 LocalPlayer = this;
 
+                string userName = UserManager.Instance.User.Name;
                 string netId = GetComponent<NetworkIdentity>().netId.ToString();
-                var newName = $"Player{netId}";
+                var newName = $"{userName}{netId}";
                 SetName(newName);
-                GameManager.Instance.CmdPrintMessage($"{newName} joined!", null, ChatType.Info);
 
-                //TODO : Report
+                //GameManager.Instance.CmdPrintMessage($"{newName} joined!", null, ChatType.Info);
+                //TODO : Report                
             }
 
             CmdSetMatchChecker(MatchManager.Instance.Match.MatchID.ToGuid());
-            //TODO: Fetch all player info from server..?
-            _playerInfo.SetPlayer(this);
+
+            if (UserManager.Instance.User.IsHost && isLocalPlayer)
+            {
+                CmdSpawnChatHub(MatchManager.Instance.Match.MatchID.ToGuid());
+            }
         }
 
-        public override void OnStartLocalPlayer()
+        [Command]
+        public void CmdSpawnChatHub(Guid matchGuid)
         {
-            base.OnStartLocalPlayer();
+            Debug.Log($"Spawning hub for {matchGuid}");
+            var chatHub = Instantiate(_chatHubPrefab);
+            NetworkServer.Spawn(chatHub);
+            chatHub.GetComponent<NetworkMatchChecker>().matchId = matchGuid;
         }
 
         [Command]
