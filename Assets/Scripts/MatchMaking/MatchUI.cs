@@ -31,28 +31,13 @@ namespace Assets.Scripts
             _currentPlayerInfoText.text = $"{match.CurrentPlayersCount}/{match.MaxPlayers}";
         }
 
-        public void JoinMatch()
+        public async void JoinMatch()
         {
             _joinButton.enabled = false;
 
-            JoinMatchAsync().ConfigureAwait(true).GetAwaiter().OnCompleted(() =>
-            {
-                _joinButton.enabled = true;
-            });
-        }
+            await LobbyManager.Instance.JoinMatchAsync(_match).ConfigureAwait(true);
 
-        public async Task JoinMatchAsync()
-        {
-            var result = await MatchServer.Instance.JoinMatch(_match.IpPortInfo.IpAddress, _match.MatchID, UserManager.Instance.User);
-
-            if (result.JoinSucceeded == false)
-            {
-                //TODO : prompt joining fail.
-                Debug.LogError(result.JoinFailReason);
-                return;
-            }
-
-            LobbyManager.Instance.MoveToMatch(result.Match);
+            _joinButton.enabled = true;
         }
     }
 }

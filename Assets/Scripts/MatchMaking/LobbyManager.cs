@@ -42,15 +42,30 @@ namespace Assets.Scripts.Networking
 
         [Header("Debug")]
         [SerializeField]
-        private Text _matchCreateResultText;
+        private Text _requestResultText;
 
         private List<GameObject> _matchUIs = new List<GameObject>();
 
         private void Start()
         {
             Instance = this;
+            SceneManager.activeSceneChanged += OnSceneChanged;
+
+            _requestResultText.text = "";
 
             StartCoroutine(Run());
+        }
+
+        private void OnSceneChanged(Scene arg0, Scene arg1)
+        {
+            if (arg1.name == "LobbyScene")
+            {
+                StartCoroutine(Run());
+            }
+            else
+            {
+                StopAllCoroutines();
+            }
         }
 
         private void OnDestroy()
@@ -62,7 +77,7 @@ namespace Assets.Scripts.Networking
         {
             FetchAllMatchesAsync();
 
-            yield return new WaitForSecondsRealtime(2.5f);
+            yield return new WaitForSecondsRealtime(3f);
         }
 
         public async void RefreshLobby()
@@ -93,32 +108,19 @@ namespace Assets.Scripts.Networking
             }
         }
 
-        private void AddMatch(MatchDTO match)
-        {
-            var matchUIInstance = Instantiate(_matchUIPrefab, _matchUIPanel.transform);
-            var matchUI = matchUIInstance.GetComponent<MatchUI>();
-
-            _matchUIInstances.Add(matchUIInstance);
-            matchUI.UpdateInfo(match);
-
-            _matchUIs.Add(matchUIInstance);
-        }
-
-        public void OpenCreateMatchPrompt()
-        {
-            _createMatchCanvas.enabled = true;
-        }
-
-        public void CloseCreateMatchPrompt()
-        {
-            _createMatchCanvas.enabled = false;
-        }
-
         public void CreateNewMatch()
         {
             _createMatchButton.enabled = false;
 
             var matchName = _newMatchNameInputField.text;
+
+            if (string.IsNullOrEmpty(matchName))
+            {
+                _requestResultText.text = "Match name cannot be empty";
+                CloseCreateMatchPrompt();
+                return;
+            }
+
             _newMatchNameInputField.text = "";
 
             CreateNewMatchAsync(matchName).ConfigureAwait(true).GetAwaiter().OnCompleted(() =>
@@ -126,6 +128,20 @@ namespace Assets.Scripts.Networking
                 _createMatchButton.enabled = true;
                 CloseCreateMatchPrompt();
             });
+        }
+
+        public async Task JoinMatchAsync(MatchDTO match)
+        {
+            var result = await MatchServer.Instance.JoinMatch(match.IpPortInfo.IpAddress, match.MatchID, UserManager.Instance.User);
+
+            if (result.JoinSucceeded == false)
+            {
+                Debug.LogError(result.JoinFailReason);
+                _requestResultText.text = result.JoinFailReason;
+                return;
+            }
+
+            MoveToMatch(result.Match);
         }
 
         public void MoveToMatch(MatchDTO match)
@@ -139,14 +155,41 @@ namespace Assets.Scripts.Networking
         {
             var result = await MatchServer.Instance.CreateMatchAsync(matchName);
 
-            var creationResultText = $"{result.IsCreationSuccess} : {result.Match.MatchID}";
-            _matchCreateResultText.text = creationResultText;
+            if (result.IsCreationSuccess == false)
+            {
+                _requestResultText.text = result.CreationFailReason;
+            }
+            else
+            {
+                _requestResultText.text = "";
+            }
 
             if (result.IsCreationSuccess)
             {
                 MoveToMatch(result.Match);
                 UserManager.Instance.User.IsHost = true;
             }
+        }
+
+        public void OpenCreateMatchPrompt()
+        {
+            _createMatchCanvas.enabled = true;
+        }
+
+        public void CloseCreateMatchPrompt()
+        {
+            _createMatchCanvas.enabled = false;
+        }
+
+        private void AddMatch(MatchDTO match)
+        {
+            var matchUIInstance = Instantiate(_matchUIPrefab, _matchUIPanel.transform);
+            var matchUI = matchUIInstance.GetComponent<MatchUI>();
+
+            _matchUIInstances.Add(matchUIInstance);
+            matchUI.UpdateInfo(match);
+
+            _matchUIs.Add(matchUIInstance);
         }
     }
 }
