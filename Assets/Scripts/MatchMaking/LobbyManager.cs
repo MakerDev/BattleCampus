@@ -46,11 +46,25 @@ namespace Assets.Scripts.Networking
         private void Start()
         {
             Instance = this;
+
+            StartCoroutine(Run());
+        }
+
+        private void OnDestroy()
+        {
+            StopAllCoroutines();
+        }
+
+        private IEnumerator Run()
+        {
+            FetchAllMatchesAsync();
+
+            yield return new WaitForSecondsRealtime(2.5f);
         }
 
         public async void RefreshLobby()
         {
-            await FetchAllMatchesAsync();
+            await FetchAllMatchesAsync().ConfigureAwait(true);
         }
 
         public async Task FetchAllMatchesAsync()
@@ -115,6 +129,7 @@ namespace Assets.Scripts.Networking
             if (result.IsCreationSuccess)
             {
                 MoveToMatch(result.Match);
+                UserManager.Instance.User.IsHost = true;
             }
         }
     }
