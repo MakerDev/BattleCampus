@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
+    /// <summary>
+    /// Floating UI above the players
+    /// </summary>
     public class PlayerInfoUI : MonoBehaviour
     {
         [SerializeField]

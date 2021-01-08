@@ -23,7 +23,8 @@ namespace Assets.Scripts
         [SerializeField]
         private float _maxHealth = 100;
 
-        private float _currentHealth;
+        [SyncVar]
+        private float _currentHealth = 100;
         public float CurrentHealth { get { return _currentHealth; } set { _currentHealth = value; } }
 
         //For lobby
@@ -57,10 +58,15 @@ namespace Assets.Scripts
         public GameObject _chatHubPrefab;
 
         private void Start()
-        {
-            _currentHealth = _maxHealth;
-
+        {            
             _playerInfo.SetPlayer(this);
+        }
+
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            //To avoid overriding synced value, only set this on server
+            _currentHealth = _maxHealth;
         }
 
         public override void OnStartClient()
@@ -79,7 +85,7 @@ namespace Assets.Scripts
                 SetName(newName);
 
                 //GameManager.Instance.CmdPrintMessage($"{newName} joined!", null, ChatType.Info);
-                //TODO : Report                
+                //TODO : Report
             }
 
             CmdSetMatchChecker(MatchManager.Instance.Match.MatchID.ToGuid());
@@ -248,15 +254,27 @@ namespace Assets.Scripts
         {
             yield return new WaitForSeconds(GameManager.Instance.MatchSetting.RespawnTime);
 
-            var spawnPoints = NetworkManager.singleton.GetStartPosition();
-            transform.position = spawnPoints.position;
-            transform.rotation = spawnPoints.rotation;
+            CmdRespawn();
 
             yield return new WaitForSeconds(0.1f);
 
             PlayerSetUp();
 
             Debug.Log(transform.name + " respawned");
+        }
+
+        [Command]
+        private void CmdRespawn()
+        {
+            var spawnPoint = NetworkManager.singleton.GetStartPosition();
+            RpcSpawn(spawnPoint.position, spawnPoint.rotation);
+        }
+
+        [ClientRpc]
+        private void RpcSpawn(Vector3 position, Quaternion rotation)
+        {
+            transform.position = position;
+            transform.rotation = rotation;
         }
 
         private void Die()

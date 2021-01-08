@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 3272733}
   - component: {fileID: 3272732}
   m_Layer: 5
-  m_Name: CreationResultText
+  m_Name: RequestResultText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 0.2971698, b: 0.2971698, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -190,7 +190,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: Failed to create new match
 --- !u!222 &3272733
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1416,7 +1416,7 @@ MonoBehaviour:
   _newMatchNameInputField: {fileID: 1358954884}
   _createMatchButton: {fileID: 867508364}
   _matchManager: {fileID: 1173437716}
-  _matchCreateResultText: {fileID: 3272732}
+  _requestResultText: {fileID: 3272732}
 --- !u!4 &717795337
 Transform:
   m_ObjectHideFlags: 0

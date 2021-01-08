@@ -64,7 +64,7 @@ namespace Assets.Scripts
         {
             base.OnStartClient();
 
-            _matchNameText.text = MatchManager.Instance.Match.Name;
+            _matchNameText.text = $"<{MatchManager.Instance.Match.Name}>";
         }
 
         private void Update()
