@@ -31,7 +31,10 @@ namespace Assets.Scripts.Networking
         private List<GameObject> _matchUIInstances = new List<GameObject>();
 
         [SerializeField]
-        private Canvas _createMatchUI;
+        private Canvas _createMatchCanvas;
+        [SerializeField]
+        private InputField _newMatchNameInputField;
+
         [SerializeField]
         private Button _createMatchButton;
         [SerializeField]
@@ -101,28 +104,40 @@ namespace Assets.Scripts.Networking
             _matchUIs.Add(matchUIInstance);
         }
 
+        public void OpenCreateMatchPrompt()
+        {
+            _createMatchCanvas.enabled = true;
+        }
+
+        public void CloseCreateMatchPrompt()
+        {
+            _createMatchCanvas.enabled = false;
+        }
+
         public void CreateNewMatch()
         {
             _createMatchButton.enabled = false;
 
-            CreateNewMatchAsync().ConfigureAwait(true).GetAwaiter().OnCompleted(() =>
+            var matchName = _newMatchNameInputField.text;
+            _newMatchNameInputField.text = "";
+
+            CreateNewMatchAsync(matchName).ConfigureAwait(true).GetAwaiter().OnCompleted(() =>
             {
                 _createMatchButton.enabled = true;
+                CloseCreateMatchPrompt();
             });
         }
 
         public void MoveToMatch(MatchDTO match)
         {
             //Configure MatchManager
-            //_matchManager.ConfigureMatchInfo(match);
             MatchManager.Instance.ConfigureMatchInfo(match);
-            //TODO : Move to  GameScene 
             SceneManager.LoadScene("GameScene");
         }
 
-        public async Task CreateNewMatchAsync()
+        public async Task CreateNewMatchAsync(string matchName)
         {
-            var result = await MatchServer.Instance.CreateMatchAsync("Room1");
+            var result = await MatchServer.Instance.CreateMatchAsync(matchName);
 
             var creationResultText = $"{result.IsCreationSuccess} : {result.Match.MatchID}";
             _matchCreateResultText.text = creationResultText;

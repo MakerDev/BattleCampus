@@ -43,6 +43,8 @@ public class ClientAutoStart : MonoBehaviour
         _telepathyTransport.port = (ushort)ipPortInfo.DesktopPort;
         _webTransport.port = (ushort)ipPortInfo.WebsocketPort;
 
+        Debug.Log("Client join server");
+
         _networkManager.StartClient();
     }
 }

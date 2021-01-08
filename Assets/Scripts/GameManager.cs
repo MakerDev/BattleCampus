@@ -27,6 +27,8 @@ namespace Assets.Scripts
         private GameObject _textObjectPrefab;
         [SerializeField]
         private InputField _chatInputField;
+        [SerializeField]
+        private Text _matchNameText;
 
         [SerializeField]
         private GameObject _playerListPanel;
@@ -62,14 +64,8 @@ namespace Assets.Scripts
         {
             base.OnStartClient();
 
+            _matchNameText.text = MatchManager.Instance.Match.Name;
         }
-
-        //[Command(ignoreAuthority = true)]
-        //public void CmdSetMatchId(Guid matchID)
-        //{
-        //    Debug.Log("Mathc ID Set - " + matchID.ToString());
-        //    GetComponent<NetworkMatchChecker>().matchId = matchID;
-        //}
 
         private void Update()
         {
@@ -125,11 +121,6 @@ namespace Assets.Scripts
                     _chatInputField.ActivateInputField();
                 }
             }
-        }
-
-        public void SetChatPanel(GameObject chatPanel)
-        {
-            _chatPanel = chatPanel;
         }
 
         [Client]
