@@ -9,5 +9,6 @@ namespace BattleCampusMatchServer.Models
         public Guid ID { get; set; }
         public string StudentID { get; set; }
         public string Name { get; set; }
+        public bool IsHost { get; set; } = false;
     }
 }

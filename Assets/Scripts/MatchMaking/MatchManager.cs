@@ -8,7 +8,7 @@ namespace Assets.Scripts.MatchMaking
 {
     public class MatchManager : MonoBehaviour
     {
-        public static MatchManager Instance = null;
+        public static MatchManager Instance { get; private set; }
 
         public MatchDTO Match { get; private set; }
         public IpPortInfo IpPortInfo { get; private set; } = new IpPortInfo();
