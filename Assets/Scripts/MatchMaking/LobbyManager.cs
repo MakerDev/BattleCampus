@@ -1,12 +1,10 @@
 ﻿using Assets.Scripts.MatchMaking;
 using BattleCampusMatchServer.Models.DTOs;
+using Cysharp.Threading.Tasks;
 using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -49,23 +47,10 @@ namespace Assets.Scripts.Networking
         private void Start()
         {
             Instance = this;
-            SceneManager.activeSceneChanged += OnSceneChanged;
 
             _requestResultText.text = "";
 
-            StartCoroutine(Run());
-        }
-
-        private void OnSceneChanged(Scene arg0, Scene arg1)
-        {
-            if (arg1.name == "LobbyScene")
-            {
-                StartCoroutine(Run());
-            }
-            else
-            {
-                StopAllCoroutines();
-            }
+            //StartCoroutine(Run());
         }
 
         private void OnDestroy()
@@ -82,10 +67,10 @@ namespace Assets.Scripts.Networking
 
         public async void RefreshLobby()
         {
-            await FetchAllMatchesAsync().ConfigureAwait(true);
+            await FetchAllMatchesAsync();
         }
 
-        public async Task FetchAllMatchesAsync()
+        public async UniTask FetchAllMatchesAsync()
         {
             var matches = await MatchServer.Instance.GetAllMatchesAsync();
 
@@ -108,7 +93,7 @@ namespace Assets.Scripts.Networking
             }
         }
 
-        public void CreateNewMatch()
+        public async void CreateNewMatch()
         {
             _createMatchButton.enabled = false;
 
@@ -123,16 +108,15 @@ namespace Assets.Scripts.Networking
 
             _newMatchNameInputField.text = "";
 
-            CreateNewMatchAsync(matchName).ConfigureAwait(true).GetAwaiter().OnCompleted(() =>
-            {
-                _createMatchButton.enabled = true;
-                CloseCreateMatchPrompt();
-            });
+            await CreateNewMatchAsync(matchName);
+
+            _createMatchButton.enabled = true;
+            CloseCreateMatchPrompt();
         }
 
-        public async Task JoinMatchAsync(MatchDTO match)
+        public async UniTask JoinMatchAsync(MatchDTO match)
         {
-            var result = await MatchServer.Instance.JoinMatch(match.IpPortInfo.IpAddress, match.MatchID, UserManager.Instance.User);
+            var result = await MatchServer.Instance.JoinMatchAsync(match.IpPortInfo.IpAddress, match.MatchID, UserManager.Instance.User);
 
             if (result.JoinSucceeded == false)
             {
@@ -151,7 +135,7 @@ namespace Assets.Scripts.Networking
             SceneManager.LoadScene("GameScene");
         }
 
-        public async Task CreateNewMatchAsync(string matchName)
+        public async UniTask CreateNewMatchAsync(string matchName)
         {
             var result = await MatchServer.Instance.CreateMatchAsync(matchName);
 

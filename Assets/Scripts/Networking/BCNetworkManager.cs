@@ -1,12 +1,9 @@
 ﻿using Assets.Scripts.MatchMaking;
 using BattleCampusMatchServer.Models;
+using Cysharp.Threading.Tasks;
 using Mirror;
 using NUnit.Framework;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using UnityEngine;
 
 namespace Assets.Scripts.Networking
@@ -40,7 +37,7 @@ namespace Assets.Scripts.Networking
             return ipPortInfo;
         }
 
-        public override void OnStartServer()
+        public override async void OnStartServer()
         {
             base.OnStartServer();
 
@@ -50,14 +47,8 @@ namespace Assets.Scripts.Networking
 
             var name = $"Server:{serverIpPortInfo.IpAddress}";
 
-            MatchServer.Instance.RegisterServerAsync(name, serverIpPortInfo).ContinueWith(t =>
-            {
-                if (t.Result == false)
-                {
-                    //TODO : Shutdown server instance and report it.
-                    //Shutdown();
-                }
-            });
+            var result = await MatchServer.Instance.RegisterServerAsync(name, serverIpPortInfo);
+            //TODO : do proper error handling
         }
 
         public override async void OnStopServer()

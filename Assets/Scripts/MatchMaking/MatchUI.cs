@@ -1,8 +1,8 @@
 ﻿using Assets.Scripts.MatchMaking;
 using Assets.Scripts.Networking;
 using BattleCampusMatchServer.Models.DTOs;
+using Cysharp.Threading.Tasks;
 using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,7 +35,7 @@ namespace Assets.Scripts
         {
             _joinButton.enabled = false;
 
-            await LobbyManager.Instance.JoinMatchAsync(_match).ConfigureAwait(true);
+            await LobbyManager.Instance.JoinMatchAsync(_match);
 
             _joinButton.enabled = true;
         }

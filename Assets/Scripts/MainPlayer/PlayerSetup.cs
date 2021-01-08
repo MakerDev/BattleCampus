@@ -31,7 +31,6 @@ namespace Assets.Scripts
             private set { _playerUI = value; }
         }
 
-
         private void Start()
         {
             string netId = GetComponent<NetworkIdentity>().netId.ToString();

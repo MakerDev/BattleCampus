@@ -1,7 +1,6 @@
 ﻿using BattleCampusMatchServer.Models;
 using BattleCampusMatchServer.Models.DTOs;
-using System.Collections;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.MatchMaking
@@ -31,6 +30,7 @@ namespace Assets.Scripts.MatchMaking
             IpPortInfo = match.IpPortInfo;
         }
 
+        //TODO : turn this back on?
         //This means the player has exited game or that the game is ended.
         //This is not synced as it's not a NetworkBehavior
         //private async void OnDisable()
@@ -38,7 +38,7 @@ namespace Assets.Scripts.MatchMaking
         //    await NotifyPlayerExitAsync();
         //}
 
-        public async Task NotifyPlayerExitAsync()
+        public async UniTask NotifyPlayerExitAsync()
         {
             await MatchServer.Instance.NotifyPlayerExitAsync(IpPortInfo.IpAddress, Match.MatchID, UserManager.Instance.User);
         }
