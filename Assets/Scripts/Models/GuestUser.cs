@@ -9,7 +9,7 @@ namespace BattleCampusMatchServer.Models
         public GuestUser()
         {
             Name = "Guest";
-            StudentID = "2020485485";
+            StudentID = null;
             ID = Guid.NewGuid();
         }
     }

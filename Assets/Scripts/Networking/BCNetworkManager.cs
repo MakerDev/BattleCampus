@@ -89,6 +89,16 @@ namespace Assets.Scripts.Networking
             base.OnServerDisconnect(conn);
         }
 
+        //Reset MatchManager, UserManager
+        public override void OnClientDisconnect(NetworkConnection conn)
+        {
+            base.OnClientDisconnect(conn);
+
+            UserManager.Instance.ResetMatchInfo();
+            MatchManager.Instance.ResetMatchInfo();
+        }
+
+        //TODO : Rather than unregistering, change to set state to off.
         public override async void OnStopServer()
         {
             //TODO : Make graceful stop.
