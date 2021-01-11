@@ -15,9 +15,11 @@ namespace Assets.Scripts.MatchMaking
     /// </summary>
     public class MatchServer
     {
+#if UNITY_STANDALONE_LINUX || UNITY_WEBGL
+        private const string BASE_ADDRESS = "https://battlecampusmatchserver.azurewebsites.net/api/";
+#else
         private const string BASE_ADDRESS = "https://localhost:5001/api/";
-        //private const string BASE_ADDRESS = "https://battlecampusmatchserver.azurewebsites.net/api/";
-
+#endif
         private static MatchServer _instance = null;
         public static MatchServer Instance
         {
@@ -80,6 +82,25 @@ namespace Assets.Scripts.MatchMaking
 
             request.SetRequestHeader("Content-Type", "application/json");
 
+            await request.SendWebRequest();
+        }
+
+        public async UniTask NotifyUserConnect(string serverIp, int connectionID, User user)
+        {
+            user.ConnectionID = connectionID;
+
+            var userJson = JsonConvert.SerializeObject(user);
+            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/notify/connect?serverIp={serverIp}&connectionID={connectionID}", "");
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(userJson));
+            request.uploadHandler.contentType = "application/json";
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            await request.SendWebRequest();
+        }
+
+        public async UniTask NotifyUserDisconnect(string serverIp, int connectionID)
+        {
+            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/notify/disconnect?serverIp={serverIp}&connectionID={connectionID}", "");
             await request.SendWebRequest();
         }
 
