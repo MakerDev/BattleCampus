@@ -69,7 +69,7 @@ namespace Assets.Scripts.Networking
                 _fetchTask = FetchAllMatchesAsync();
 
                 await _fetchTask;
-                await UniTask.Delay(2500);
+                await UniTask.Delay(4500);
             }
         }
 
@@ -139,6 +139,7 @@ namespace Assets.Scripts.Networking
         public void MoveToMatch(MatchDTO match)
         {
             //Configure MatchManager
+            UserManager.Instance.User.MatchID = match.MatchID;
             MatchManager.Instance.ConfigureMatchInfo(match);
             SceneManager.LoadScene("GameScene");
         }

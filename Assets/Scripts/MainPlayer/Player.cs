@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.MatchMaking;
+using Assets.Scripts.Networking;
+using BattleCampusMatchServer.Models;
 using Mirror;
 using System;
 using System.Collections;
@@ -67,6 +69,25 @@ namespace Assets.Scripts
             base.OnStartServer();
             //To avoid overriding synced value, only set this on server
             _currentHealth = _maxHealth;
+        }
+
+        public override void OnStartLocalPlayer()
+        {
+            base.OnStartLocalPlayer();
+
+            CmdGetConnectionID();
+        }
+
+        [Command]
+        private void CmdGetConnectionID()
+        {
+            TargetGetConnectionID(connectionToClient.connectionId);
+        }
+
+        [TargetRpc]
+        private void TargetGetConnectionID(int connectionID)
+        {
+            BCNetworkManager.Instance.NotifyUserConnect(connectionID, UserManager.Instance.User);
         }
 
         public override void OnStartClient()

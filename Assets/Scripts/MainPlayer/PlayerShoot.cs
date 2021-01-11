@@ -127,7 +127,7 @@ namespace Assets.Scripts
 
             player.RpcTakeDamage(player.CurrentHealth, shooter);
 
-            //Does this increase too much server load..?
+            //Does this increase too much server load..? Looks fine.
             //Server side respawn
             if (player.CurrentHealth <= 0)
             {
