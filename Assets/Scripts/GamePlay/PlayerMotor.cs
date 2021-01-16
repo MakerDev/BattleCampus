@@ -18,7 +18,7 @@ public class PlayerMotor : NetworkBehaviour
     private Vector3 _thrusterForce = Vector3.zero;
 
     [SerializeField]
-    private float _cameraRotationLimit = 85f;
+    private float _cameraRotationLimit = 75f;
     private CharacterController _controller;
 
     [SerializeField]
