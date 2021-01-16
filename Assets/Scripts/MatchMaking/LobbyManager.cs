@@ -38,6 +38,9 @@ namespace Assets.Scripts.Networking
         [SerializeField]
         private MatchManager _matchManager;
 
+        [SerializeField]
+        private Canvas _loadingCanvas;
+
         [Header("Debug")]
         [SerializeField]
         private Text _requestResultText;
@@ -103,6 +106,7 @@ namespace Assets.Scripts.Networking
 
         public async void CreateNewMatch()
         {
+            _loadingCanvas.enabled = true;
             _createMatchButton.enabled = false;
 
             var matchName = _newMatchNameInputField.text;
@@ -118,13 +122,12 @@ namespace Assets.Scripts.Networking
 
             await CreateNewMatchAsync(matchName);
 
-            _createMatchButton.enabled = true;
             CloseCreateMatchPrompt();
         }
 
         public async UniTask JoinMatchAsync(MatchDTO match)
         {
-            var result = await MatchServer.Instance.JoinMatchAsync(match.IpPortInfo.IpAddress, match.MatchID, UserManager.Instance.User);
+            var result = await MatchServer.Instance.JoinMatchAsync(match.IpPortInfo, match.MatchID, UserManager.Instance.User);
 
             if (result.JoinSucceeded == false)
             {
@@ -151,17 +154,13 @@ namespace Assets.Scripts.Networking
             if (result.IsCreationSuccess == false)
             {
                 _requestResultText.text = result.CreationFailReason;
-            }
-            else
-            {
-                _requestResultText.text = "";
+                return;
             }
 
-            if (result.IsCreationSuccess)
-            {
-                MoveToMatch(result.Match);
-                UserManager.Instance.User.IsHost = true;
-            }
+            _requestResultText.text = "";
+
+            UserManager.Instance.User.IsHost = true;
+            MoveToMatch(result.Match);
         }
 
         public void OpenCreateMatchPrompt()
@@ -171,6 +170,8 @@ namespace Assets.Scripts.Networking
 
         public void CloseCreateMatchPrompt()
         {
+            _createMatchButton.enabled = true;
+            _loadingCanvas.enabled = false;
             _createMatchCanvas.enabled = false;
         }
 
