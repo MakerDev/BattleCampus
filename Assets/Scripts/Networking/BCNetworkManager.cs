@@ -73,17 +73,17 @@ namespace Assets.Scripts.Networking
             }
         }
 
-        public async void NotifyUserConnect(int connectionId, User user)
+        public async void NotifyUserConnect(int connectionId, GameUser user)
         {
             user.ConnectionID = connectionId;
             
-            await MatchServer.Instance.NotifyUserConnect(MatchManager.Instance.Match.IpPortInfo.IpAddress, connectionId, user);
+            await MatchServer.Instance.NotifyUserConnect(MatchManager.Instance.Match.IpPortInfo, connectionId, user);
         }
 
         //This is called on server. 
         public override async void OnServerDisconnect(NetworkConnection conn)
         {
-            await MatchServer.Instance.NotifyUserDisconnect(_ipPortInfo.IpAddress, conn.connectionId);
+            await MatchServer.Instance.NotifyUserDisconnect(_ipPortInfo, conn.connectionId);
             Debug.Log($"Disconnected user {conn.connectionId}");
 
             base.OnServerDisconnect(conn);
@@ -98,11 +98,9 @@ namespace Assets.Scripts.Networking
             MatchManager.Instance.ResetMatchInfo();
         }
 
-        //TODO : Rather than unregistering, change to set state to off.
         public override async void OnStopServer()
         {
-            //TODO : Make graceful stop.
-            await MatchServer.Instance.UnRegisterServerAsync(networkAddress);
+            await MatchServer.Instance.TurnOffServerAsync(_ipPortInfo);
 
             base.OnStopServer();
         }

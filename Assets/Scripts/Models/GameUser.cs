@@ -8,7 +8,7 @@ namespace BattleCampusMatchServer.Models
     /// This player represents game player.
     /// </summary>
     [Serializable]
-    public class User
+    public class GameUser
     {
         public Guid ID { get; set; }
         public string StudentID { get; set; }

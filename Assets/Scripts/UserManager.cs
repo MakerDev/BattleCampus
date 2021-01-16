@@ -1,5 +1,6 @@
 ﻿using BattleCampusMatchServer.Models;
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Assets.Scripts
         public const string LOGIN_ADDRESS = "https://ysweb.yonsei.ac.kr/ysbus_main.jsp";
         public static UserManager Instance;
 
-        public User User { get; private set; } = new GuestUser();
+        public GameUser User { get; private set; } = new GuestUser();
 
         [SerializeField]
         private InputField _idInputField;
@@ -58,6 +59,7 @@ namespace Assets.Scripts
 
             if (loginSuccess)
             {
+                User.ID = Guid.NewGuid();
                 User.StudentID = _idInputField.text;
                 SceneManager.LoadScene("Lobby");
             }
@@ -71,6 +73,13 @@ namespace Assets.Scripts
             {
                 button.enabled = true;
             }
+        }
+
+        public void LoginAsGuest()
+        {
+            User = new GuestUser();
+
+            SceneManager.LoadScene("Lobby");
         }
 
         private async UniTask<bool> LoginAsync(string userid, string password)

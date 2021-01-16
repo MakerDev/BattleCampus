@@ -140,11 +140,6 @@ namespace Assets.Scripts
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            if (isLocalPlayer)
-            {
-                await MatchManager.Instance.NotifyPlayerExitAsync();
-            }
-
             base.OnStopClient();
         }
 

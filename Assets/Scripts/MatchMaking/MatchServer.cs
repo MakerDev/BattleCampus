@@ -10,6 +10,12 @@ using UnityEngine.VR;
 
 namespace Assets.Scripts.MatchMaking
 {
+    internal class ServerUserDTO
+    {
+        public IpPortInfo IpPortInfo { get; set; }
+        public GameUser User { get; set; }
+    }
+
     /// <summary>
     /// Hub for Match API Server
     /// </summary>
@@ -18,7 +24,7 @@ namespace Assets.Scripts.MatchMaking
 #if UNITY_STANDALONE_LINUX || UNITY_WEBGL
         private const string BASE_ADDRESS = "https://battlecampusmatchserver.azurewebsites.net/api/";
 #else
-        private const string BASE_ADDRESS = "https://localhost:5001/api/";
+        private const string BASE_ADDRESS = "https://localhost:4001/api/";
 #endif
         private static MatchServer _instance = null;
         public static MatchServer Instance
@@ -59,11 +65,17 @@ namespace Assets.Scripts.MatchMaking
             return JsonConvert.DeserializeObject<MatchCreationResultDTO>(matchCreationResultString);
         }
 
-        public async UniTask<MatchJoinResultDTO> JoinMatchAsync(string serverIp, string matchID, User user)
+        //TODO: chagne all signitures
+        public async UniTask<MatchJoinResultDTO> JoinMatchAsync(IpPortInfo ipPortInfo, string matchID, GameUser user)
         {
-            var userJson = JsonConvert.SerializeObject(user);
-            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/join?serverIp={serverIp}&matchID={matchID}", "");
-            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(userJson));
+            var serverUser = new ServerUserDTO
+            {
+                User = user,
+                IpPortInfo = ipPortInfo,
+            };
+            var serverUserJson = JsonConvert.SerializeObject(serverUser);
+            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/join?matchID={matchID}", "");
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(serverUserJson));
             request.uploadHandler.contentType = "application/json";
             request.SetRequestHeader("Content-Type", "application/json");
 
@@ -73,34 +85,32 @@ namespace Assets.Scripts.MatchMaking
             return JsonConvert.DeserializeObject<MatchJoinResultDTO>(matchJoinResultString);
         }
 
-        public async UniTask NotifyPlayerExitAsync(string serverIp, string matchID, User user)
-        {
-            var userJson = JsonConvert.SerializeObject(user);
-            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/notify/exit?serverIp={serverIp}&matchID={matchID}", "");
-            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(userJson));
-            request.uploadHandler.contentType = "application/json";
-
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            await request.SendWebRequest();
-        }
-
-        public async UniTask NotifyUserConnect(string serverIp, int connectionID, User user)
+        public async UniTask NotifyUserConnect(IpPortInfo ipPortInfo, int connectionID, GameUser user)
         {
             user.ConnectionID = connectionID;
+            
+            var serverUser = new ServerUserDTO
+            {
+                User = user,
+                IpPortInfo = ipPortInfo,
+            };
 
-            var userJson = JsonConvert.SerializeObject(user);
-            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/notify/connect?serverIp={serverIp}&connectionID={connectionID}", "");
-            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(userJson));
+            var serverUserJson = JsonConvert.SerializeObject(serverUser);
+            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/notify/connect?connectionID={connectionID}", "");
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(serverUserJson));
             request.uploadHandler.contentType = "application/json";
             request.SetRequestHeader("Content-Type", "application/json");
 
             await request.SendWebRequest();
         }
 
-        public async UniTask NotifyUserDisconnect(string serverIp, int connectionID)
+        //This also acts as notification of player exiting game.
+        public async UniTask NotifyUserDisconnect(IpPortInfo ipPortInfo, int connectionID)
         {
-            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/notify/disconnect?serverIp={serverIp}&connectionID={connectionID}", "");
+            var request = UnityWebRequest.Post($"{BASE_ADDRESS}matches/notify/disconnect?connectionID={connectionID}", "");
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ipPortInfo)));
+            request.uploadHandler.contentType = "application/json";
+            request.SetRequestHeader("Content-Type", "application/json");
             await request.SendWebRequest();
         }
 
@@ -117,11 +127,14 @@ namespace Assets.Scripts.MatchMaking
             return (!response.isNetworkError && !response.isHttpError);
         }
 
-        public async UniTask UnRegisterServerAsync(string ipAddress)
+        public async UniTask TurnOffServerAsync(IpPortInfo ipPortInfo)
         {
-            var request = UnityWebRequest.Delete($"{BASE_ADDRESS}server/unregister/{ipAddress}");
+            var request = UnityWebRequest.Delete($"{BASE_ADDRESS}server/turnoff/{ipPortInfo}");
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ipPortInfo)));
+            request.uploadHandler.contentType = "application/json";
+            request.SetRequestHeader("Content-Type", "application/json");
             await request.SendWebRequest();
-            Debug.Log($"Unregister server {ipAddress}");
+            Debug.Log($"Unregister server {ipPortInfo}");
         }
     }
 }

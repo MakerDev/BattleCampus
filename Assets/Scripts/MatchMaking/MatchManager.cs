@@ -35,18 +35,5 @@ namespace Assets.Scripts.MatchMaking
             Match = null;
             IpPortInfo = null;
         }
-
-        //TODO : turn this back on?
-        //This means the player has exited game or that the game is ended.
-        //This is not synced as it's not a NetworkBehavior
-        //private async void OnDisable()
-        //{
-        //    await NotifyPlayerExitAsync();
-        //}
-
-        public async UniTask NotifyPlayerExitAsync()
-        {
-            await MatchServer.Instance.NotifyPlayerExitAsync(IpPortInfo.IpAddress, Match.MatchID, UserManager.Instance.User);
-        }
     }
 }
