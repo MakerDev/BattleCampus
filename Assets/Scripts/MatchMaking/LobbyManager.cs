@@ -83,7 +83,17 @@ namespace Assets.Scripts.Networking
 
         public async UniTask FetchAllMatchesAsync()
         {
-            var matches = await MatchServer.Instance.GetAllMatchesAsync();
+            List<MatchDTO> matches;
+
+            try
+            {
+                matches = await MatchServer.Instance.GetAllMatchesAsync();
+            }
+            catch (Exception)
+            {
+                _requestResultText.text = "Failed to fetch data. Server might not be running";
+                return;
+            }
 
             if (matches == null)
             {
@@ -120,23 +130,39 @@ namespace Assets.Scripts.Networking
 
             _newMatchNameInputField.text = "";
 
-            await CreateNewMatchAsync(matchName);
-
-            CloseCreateMatchPrompt();
+            try
+            {
+                await CreateNewMatchAsync(matchName);
+            }
+            catch (Exception)
+            {
+                _requestResultText.text = "ERROR : Server might be down";
+            }
+            finally
+            {
+                CloseCreateMatchPrompt();
+            }
         }
 
         public async UniTask JoinMatchAsync(MatchDTO match)
         {
-            var result = await MatchServer.Instance.JoinMatchAsync(match.IpPortInfo, match.MatchID, UserManager.Instance.User);
-
-            if (result.JoinSucceeded == false)
+            try
             {
-                Debug.LogError(result.JoinFailReason);
-                _requestResultText.text = result.JoinFailReason;
-                return;
-            }
+                var result = await MatchServer.Instance.JoinMatchAsync(match.IpPortInfo, match.MatchID, UserManager.Instance.User);
 
-            MoveToMatch(result.Match);
+                if (result.JoinSucceeded == false)
+                {
+                    Debug.LogError(result.JoinFailReason);
+                    _requestResultText.text = result.JoinFailReason;
+                    return;
+                }
+
+                MoveToMatch(result.Match);
+            }
+            catch (Exception)
+            {
+                _requestResultText.text = "ERROR : Server might be down";
+            }            
         }
 
         public void MoveToMatch(MatchDTO match)
