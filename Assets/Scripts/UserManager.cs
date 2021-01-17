@@ -90,14 +90,21 @@ namespace Assets.Scripts
 
             var request = UnityWebRequest.Post(LOGIN_ADDRESS, form);
 
-            await request.SendWebRequest();
+            try
+            {
+                await request.SendWebRequest();
 
-            if (request.isNetworkError || request.isHttpError)
+                if (request.isNetworkError || request.isHttpError)
+                {
+                    return false;
+                }
+
+                return request.downloadHandler.text.Contains("<TITLE>Yonsei Bus Login chk</TITLE>");
+            }
+            catch (Exception)
             {
                 return false;
             }
-
-            return request.downloadHandler.text.Contains("<TITLE>Yonsei Bus Login chk</TITLE>");
         }
 
         public void LogOut()
