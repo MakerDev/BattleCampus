@@ -31,7 +31,8 @@ public class PlayerMotor : NetworkBehaviour
     private bool _isGrounded = false;
 
     public float gravity = -9.8f;
-    private float _speed = 6f;
+    [SerializeField]
+    private float _speed = 9f;
 
     private void Start()
     {

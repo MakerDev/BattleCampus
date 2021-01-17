@@ -6,7 +6,7 @@ namespace Assets.Scripts
 {
     public class MouseMove : MonoBehaviour
     {
-        public float MouseSensitivity = 200f;
+        public float MouseSensitivity = 260f;
 
         public Transform PlayerBody;
 
