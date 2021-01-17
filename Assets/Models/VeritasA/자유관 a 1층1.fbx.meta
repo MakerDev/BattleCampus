@@ -55,10 +55,10 @@ ModelImporter:
     minBoneWeight: 0.001
     meshOptimizationFlags: -1
     indexFormat: 0
-    secondaryUVAngleDistortion: 7
+    secondaryUVAngleDistortion: 4
     secondaryUVAreaDistortion: 8
-    secondaryUVHardAngle: 58
-    secondaryUVPackMargin: 43
+    secondaryUVHardAngle: 137
+    secondaryUVPackMargin: 64
     useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
