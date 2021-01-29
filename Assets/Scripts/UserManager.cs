@@ -1,4 +1,5 @@
-﻿using BattleCampusMatchServer.Models;
+﻿using Assets.Scripts.MatchMaking;
+using BattleCampusMatchServer.Models;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
@@ -84,22 +85,13 @@ namespace Assets.Scripts
 
         private async UniTask<bool> LoginAsync(string userid, string password)
         {
-            var form = new WWWForm();
-            form.AddField("userid", userid);
-            form.AddField("password", password);
-
-            var request = UnityWebRequest.Post(LOGIN_ADDRESS, form);
-
             try
             {
-                await request.SendWebRequest();
-
-                if (request.isNetworkError || request.isHttpError)
+                return await MatchServer.Instance.LoginPortal(new LoginForm
                 {
-                    return false;
-                }
-
-                return request.downloadHandler.text.Contains("<TITLE>Yonsei Bus Login chk</TITLE>");
+                    UserId = userid,
+                    Password = password,
+                });
             }
             catch (Exception)
             {

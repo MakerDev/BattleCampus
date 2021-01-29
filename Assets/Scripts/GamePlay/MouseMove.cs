@@ -11,7 +11,7 @@ namespace Assets.Scripts
         public Transform PlayerBody;
 
         private float _xRotation = 0f;
-        private float _maxRotation = 80f;
+        private float _maxRotation = 50f;
 
         void Start()
         {

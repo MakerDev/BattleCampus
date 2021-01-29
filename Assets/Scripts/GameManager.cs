@@ -43,6 +43,12 @@ namespace Assets.Scripts
         private const int MAX_MESSAGES = 10;
         private List<ChatMessage> _messages = new List<ChatMessage>();
 
+#if UNITY_WEBGL
+        private const KeyCode MENU_KEY = KeyCode.LeftControl;
+#else
+        private const KeyCode _menuKey = KeyCode.Escape;
+#endif
+
         private void Awake()
         {
             if (Instance != null)
@@ -73,7 +79,7 @@ namespace Assets.Scripts
 
             HandleChat();
 
-            if (Input.GetButtonDown("Cancel"))
+            if (Input.GetKeyDown(MENU_KEY))
             {
                 if (_menuCanvas.activeSelf)
                 {
@@ -111,7 +117,9 @@ namespace Assets.Scripts
                     {
                         ChatHub.Instance.PrintMessage(_chatInputField.text, Player.LocalPlayer.PlayerName, ChatType.Player);
                     }
+
                     _chatInputField.text = "";
+                    _chatInputField.DeactivateInputField();
                 }
             }
             else

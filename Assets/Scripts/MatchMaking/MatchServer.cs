@@ -10,10 +10,16 @@ using UnityEngine.VR;
 
 namespace Assets.Scripts.MatchMaking
 {
-    internal class ServerUserDTO
+    public class ServerUserDTO
     {
         public IpPortInfo IpPortInfo { get; set; }
         public GameUser User { get; set; }
+    }
+
+    public class LoginForm
+    {
+        public string UserId { get; set; }
+        public string Password { get; set; }
     }
 
     /// <summary>
@@ -88,7 +94,7 @@ namespace Assets.Scripts.MatchMaking
         public async UniTask NotifyUserConnect(IpPortInfo ipPortInfo, int connectionID, GameUser user)
         {
             user.ConnectionID = connectionID;
-            
+
             var serverUser = new ServerUserDTO
             {
                 User = user,
@@ -104,6 +110,25 @@ namespace Assets.Scripts.MatchMaking
             await request.SendWebRequest();
         }
 
+        public async UniTask<bool> LoginPortal(LoginForm loginForm)
+        {
+            var formJson = JsonConvert.SerializeObject(loginForm);
+            var request = UnityWebRequest.Post($"{BASE_ADDRESS}user/portal/login", "");
+            request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(formJson));
+            request.uploadHandler.contentType = "application/json";
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            await request.SendWebRequest();
+
+            if (request.responseCode == 200)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         //This also acts as notification of player exiting game.
         public async UniTask NotifyUserDisconnect(IpPortInfo ipPortInfo, int connectionID)
         {

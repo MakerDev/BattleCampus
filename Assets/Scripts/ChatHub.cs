@@ -21,7 +21,6 @@ namespace Assets.Scripts
         [Command(ignoreAuthority = true)]
         public void CmdPrintMessage(string message, string sender, ChatType chatType)
         {
-            Debug.Log("Print requested");
             RpcPrintMessage(message, sender, chatType);
         }
 
